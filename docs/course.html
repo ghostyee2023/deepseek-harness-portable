@@ -228,6 +228,37 @@ body{display:grid;grid-template-columns:320px minmax(0,1fr)}
   .topbar{margin:0 0 20px;padding:12px 0}
 }
 </style>
+<style>
+/* ---------- ux contrast pass ---------- */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#10131c;--surface:#171c29;--surface-2:#202636;
+    --text:#f0f3fa;--muted:#a8b1c5;--line:rgba(240,243,250,.14);
+    --brand:#6f9dff;--brand-soft:rgba(111,157,255,.16);
+    --code-bg:#0b0f18;--code-ink:#e6ecf8;
+  }
+}
+.sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
+.sidebar::-webkit-scrollbar{display:none}
+h1{font-weight:800;color:var(--text)}
+h2{font-weight:750;color:var(--text)}
+h3{font-weight:700;color:var(--text)}
+.lesson{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:30px 34px 40px;margin-bottom:34px}
+.lvl-banner{border:1px solid color-mix(in srgb,var(--brand) 38%,transparent);box-shadow:var(--shadow)}
+.course-hero{border:1px solid color-mix(in srgb,var(--brand) 34%,transparent)}
+.lvl-btn{border:1px solid var(--line);background:var(--surface)}
+.lvl-btn.done{border-color:color-mix(in srgb,var(--brand) 45%,transparent)}
+.lvl-btn .no{background:var(--surface-2);color:var(--text)}
+.lvl-btn.done .no{background:var(--brand);color:var(--accent-ink)}
+.notice,.hero-note{border-color:color-mix(in srgb,var(--brand) 30%,transparent)}
+code{color:var(--brand)}
+pre{border:1px solid var(--line)}
+blockquote{border-left:3px solid var(--brand);background:var(--brand-soft)}
+@media (max-width:900px){
+  .sidebar{position:static;height:auto}
+  .lesson{padding:24px 22px}
+}
+</style>
 </head>
 <body>
 <div id="topProg" class="top-progress"></div>
@@ -1194,6 +1225,7 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
   var st = load();
   if(!Array.isArray(st.done)) st.done = [];
   if(!st.current) st.current = "lesson-0";
+  if(typeof st.started !== "boolean") st.started = false;
   function save(){ localStorage.setItem(KEY, JSON.stringify(st)); }
   function done(id){ return st.done.indexOf(id) >= 0; }
   function stars(n){ var s=""; for(var i=0;i<3;i++) s += i<n?"★":"☆"; return s; }
@@ -1203,6 +1235,10 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
     var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
     clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove("show"); }, 2200);
   }
+  function renderHero(){
+    var h=document.querySelector(".course-hero"); if(!h) return;
+    h.style.display = (!st.started && st.done.length===0) ? "" : "none";
+  }
   function fill(){
     var earned=0; st.done.forEach(function(id){ earned += LEVELS[idx(id)].diff; });
     var pct = (st.done.length/LEVELS.length*100)+"%";
@@ -1210,6 +1246,7 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
     var tp=document.getElementById("topProg"); if(tp) tp.style.width = pct;
     var pt=document.getElementById("progTxt"); if(pt) pt.textContent = "已完成 "+st.done.length+"/"+LEVELS.length+" 关 · 星星 "+earned+"/"+LEVELS.reduce(function(a,b){return a+b.diff},0);
     var hero=document.getElementById("heroDone"); if(hero) hero.innerHTML = "<b>"+st.done.length+"</b>/"+LEVELS.length+" 已通关";
+    renderHero();
   }
   function renderNav(){
     var nav=document.getElementById("levelNav"); if(!nav) return;
@@ -1262,6 +1299,7 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
     });
   }
   function openLevel(id){
+    if(id!=="lesson-0") st.started=true;
     st.current=id; save();
     Array.prototype.forEach.call(document.querySelectorAll(".lesson"),function(s){
       s.style.display = (s.getAttribute("data-lesson")===id) ? "" : "none";
@@ -1274,7 +1312,13 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
     st.done=[]; st.current="lesson-0"; save(); openLevel("lesson-0"); toast("进度已重置");
   });
   var startBtn=document.getElementById("startBtn");
-  if(startBtn) startBtn.addEventListener("click", function(e){ e.preventDefault(); openLevel(st.current); });
+  if(startBtn) startBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    st.started=true; save();
+    var target="lesson-0";
+    for(var k=0;k<LEVELS.length;k++){ if(!done(LEVELS[k].id)){ target=LEVELS[k].id; break; } }
+    openLevel(target);
+  });
   var navHost=document.querySelector(".sidebar .side-links");
   if(navHost){ var nav=document.createElement("nav"); nav.id="levelNav"; nav.className="lvl-nav"; navHost.insertAdjacentElement("afterend", nav); }
   openLevel(st.current);
