@@ -83,25 +83,27 @@
   }
 
   /* ---------- hero ---------- */
-  .hero { padding: 72px 0 56px; }
+  .hero { padding: 72px 0 56px; text-align: center; }
   .hero .kicker {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 13px; color: var(--accent);
     background: var(--accent-soft);
     border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
     border-radius: 999px;
-    padding: 5px 14px; margin-bottom: 22px;
+    padding: 5px 14px; margin: 0 auto 22px;
   }
   .hero h1 {
     font-size: clamp(30px, 5vw, 46px);
     font-weight: 800; line-height: 1.18; letter-spacing: -0.02em;
     max-width: 17ch;
+    margin-left: auto; margin-right: auto;
   }
   .hero h1 em { font-style: normal; color: var(--accent); }
   .hero p {
     color: var(--muted); max-width: 58ch; margin-top: 18px; font-size: 16px;
+    margin-left: auto; margin-right: auto;
   }
-  .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+  .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 30px; }
   .btn {
     display: inline-flex; align-items: center; justify-content: center;
     padding: 11px 22px; border-radius: 999px;
@@ -111,7 +113,7 @@
   .btn.primary:hover { text-decoration: none; filter: brightness(1.06); }
   .btn.ghost { border: 1px solid var(--line); color: var(--text); background: var(--surface); }
   .btn.ghost:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
-  .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 26px; }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 26px; }
   .badge {
     font-size: 12.5px; color: var(--muted);
     border: 1px solid var(--line); border-radius: 999px;
@@ -236,6 +238,7 @@
     <div class="cta">
       <a class="btn primary" href="#quickstart">开始使用</a>
       <a class="btn ghost" href="https://github.com/ghostyee2023/deepseek-harness-portable/releases" target="_blank" rel="noopener">下载发布包</a>
+      <a class="btn ghost" href="course.html">职场课程</a>
     </div>
     <div class="badges">
       <span class="badge">Windows 开箱即用</span>
