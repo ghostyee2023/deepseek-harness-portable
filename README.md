@@ -12,7 +12,7 @@
 | 内容 | 地址 |
 |---|---|
 | 使用指南（网页版） | https://ghostyee2023.github.io/deepseek-harness-portable/ |
-| 职场实操课程（网页版） | https://ghostyee2023.github.io/deepseek-harness-portable/course.html |
+| 职场实操课程（闯关打卡式，网页版） | https://ghostyee2023.github.io/deepseek-harness-portable/course.html |
 | 使用指南（Markdown） | [docs/usage.md](docs/usage.md) |
 | 下载发布包 | [Releases](https://github.com/ghostyee2023/deepseek-harness-portable/releases) |
 

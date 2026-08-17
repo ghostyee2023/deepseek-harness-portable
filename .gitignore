@@ -23,3 +23,7 @@ DSH职场课程.md
 # OS / editor
 Thumbs.db
 .DS_Store
+
+# local previews
+docs/preview-*.png
+docs/.edge-*

@@ -83,6 +83,54 @@ img{max-width:100%;border-radius:var(--radius-sm)}
   *,*::before,*::after{transition:none !important;animation:none !important}
 }
 </style>
+<style>
+/* ---------- gamified course shell ---------- */
+:root{--accent-ink:#ffffff}
+@media (prefers-color-scheme:dark){:root{--accent-ink:#0b1220}}
+.toc-group{display:none}
+.sidebar .lvl-nav{display:grid;gap:8px;margin-top:14px;padding:0 10px}
+.lvl-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font-size:13px;font-weight:600;cursor:pointer}
+.lvl-btn:hover{border-color:var(--brand);text-decoration:none}
+.lvl-btn .no{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--surface-2);color:var(--muted)}
+.lvl-btn.done .no{background:var(--brand);color:var(--accent-ink)}
+.lvl-btn.locked{opacity:.55}
+.lvl-btn .st{margin-left:auto;font-size:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 18px;border-radius:999px;font-weight:600;font-size:14px;cursor:pointer;border:1px solid transparent}
+.btn.primary{background:var(--brand);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08);text-decoration:none}
+.btn.ghost{border-color:var(--line);background:var(--surface);color:var(--text)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand);text-decoration:none}
+.btn.sm{padding:5px 12px;font-size:12.5px}
+.prog{flex:1 1 200px;min-width:150px;height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--brand);border-radius:999px;transition:width .3s ease}
+.prog-txt{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.free-toggle{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.levelmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:18px 0 26px}
+.lvlcard{display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);cursor:pointer;transition:border-color .2s ease,transform .15s ease}
+.lvlcard:hover{border-color:var(--brand);transform:translateY(-2px)}
+.lvlcard.locked{opacity:.6;cursor:not-allowed}
+.lvlcard.locked:hover{border-color:var(--line);transform:none}
+.lvlcard .top{display:flex;align-items:center;justify-content:space-between}
+.lvlcard .no{font-size:13px;font-weight:800;color:var(--brand)}
+.lvlcard .stars{font-size:13px;color:#f5b301;letter-spacing:2px}
+.lvlcard h3{margin:0;font-size:15px;line-height:1.4}
+.lvlcard .goal{font-size:13px;color:var(--muted);line-height:1.6}
+.lvlcard .foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.chip{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.chip.done{color:#0e8a5f;border-color:rgba(14,138,95,.35);background:rgba(14,138,95,.08)}
+.lvl-banner{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:18px 22px;margin:0 0 22px;border:1px solid color-mix(in srgb,var(--brand) 30%,transparent);border-left:4px solid var(--brand);border-radius:var(--radius);background:var(--brand-soft)}
+.lvl-banner .meta{min-width:0}
+.lvl-banner .meta h2{margin:0 0 4px;font-size:19px;border-bottom:none;padding-bottom:0}
+.lvl-banner .meta .goal{font-size:13.5px;color:var(--muted);margin:0}
+.lvl-banner .acts{display:flex;gap:10px;flex-wrap:wrap}
+.in-lesson{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.in-lesson a{font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.in-lesson a:hover{color:var(--brand);border-color:var(--brand);text-decoration:none}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:40;background:var(--text);color:var(--bg);padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.toast.show{opacity:1}
+@media print{.levelmap,.lvl-banner,.in-lesson,.toast,.free-toggle,#resetBtn{display:none!important}.lesson{display:block!important}}
+@media (prefers-reduced-motion:reduce){.prog-fill{transition:none}.lvlcard{transition:none}}
+</style>
 </head>
 <body>
 <aside class="sidebar">
@@ -162,14 +210,24 @@ img{max-width:100%;border-radius:var(--radius-sm)}
 </div>
 </aside>
 <main class="main">
-  <div class="topbar"><span class="crumb">DSH 职场实操系列课程 · v0.1.0</span> <span class="crumb"><a href="index.html">使用指南</a> · <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub</a></span></div>
+<div class="topbar">
+  <span class="crumb">DSH 职场实操闯关 · v0.1.0</span>
+  <span class="crumb"><a href="index.html">使用指南</a> · <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub</a></span>
+  <div class="prog" title="闯关进度"><div class="prog-fill" id="progFill"></div></div>
+  <span class="prog-txt" id="progTxt">已完成 0/8 关</span>
+  <label class="free-toggle"><input type="checkbox" id="freeMode"> 自由浏览</label>
+  <button class="btn ghost sm" id="resetBtn">重置进度</button>
+</div>
+<div id="levelMap" class="levelmap"></div>
+<div id="lessonNav" class="in-lesson" style="display:none"></div>
+<div id="toast" class="toast" hidden></div>
   <div class="notice">
     💡 本课程配套 <strong>DeepSeek Harness 便携版</strong>（解压即用、免安装、自动升级）：
     <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub 仓库</a> ·
     <a href="https://github.com/ghostyee2023/deepseek-harness-portable/releases" target="_blank" rel="noopener">下载发布包</a> ·
     <a href="index.html">使用指南</a>
   </div>
-  <section class="lesson" id="lesson-0" data-lesson="0"><h1 id="lesson-0">DSH 职场实操系列课程</h1>
+<section class="lesson" data-lesson="lesson-0"><h1 id="lesson-0">DSH 职场实操系列课程</h1>
 <blockquote>
 <p>用 DeepSeek Harness（<code>dsh</code>）干那些 <strong>Claude Code / Codex 做不了、或不划算</strong> 的活。
 面向普通职场人士——不要求会编程。每一课都落在<strong>一个非常确定的场景</strong>上，给你<strong>能直接复制粘贴的提示词</strong>和<strong>逐步操作步骤</strong>。</p>
@@ -283,7 +341,7 @@ img{max-width:100%;border-radius:var(--radius-sm)}
 <li><strong>盯着审批</strong>：它要「写/删/跑命令」会问你，别一路全放行。</li>
 <li><strong>别喂敏感数据</strong>：API Key 背后是云端模型，公司机密、个人隐私文件慎用。</li>
 </ol></section>
-<section class="lesson" id="lesson-1" data-lesson="1"><h1 id="lesson-1">01 · 快速上手：30 分钟跑起来，完成第一次任务</h1>
+<section class="lesson" data-lesson="lesson-1"><h1 id="lesson-1">01 · 快速上手：30 分钟跑起来，完成第一次任务</h1>
 <blockquote>
 <p>目标：从零开始，30 分钟内启动 <code>dsh</code>，让它成功帮你完成一件小事。
 本课是后面所有场景的地基，<strong>请先完整走一遍</strong>。
@@ -396,7 +454,7 @@ img{max-width:100%;border-radius:var(--radius-sm)}
 - 是的。那个终端窗口就是 dsh 的「服务器」，关掉它就停了。下次再输入同样的启动命令即可，之前的工作区配置通常还在。</p>
 <hr />
 <p><strong>下一步</strong>：环境通了，直接跳到和你工作最相关的场景课，按步骤和提示词开干。</p></section>
-<section class="lesson" id="lesson-2" data-lesson="2"><h1 id="lesson-2">02 · 场景：大批量批处理（性价比之王）</h1>
+<section class="lesson" data-lesson="lesson-2"><h1 id="lesson-2">02 · 场景：大批量批处理（性价比之王）</h1>
 <blockquote>
 <p>适合：需要「一次处理几十～几千个文件/数据/文章」的人——运营、行政、数据、财务、内容团队。
 前置：已完成 <a href="#lesson-1">01 快速上手</a>。</p>
@@ -504,7 +562,7 @@ img{max-width:100%;border-radius:var(--radius-sm)}
 - 分批：每批 200-500 个，或让它「只处理前 500 个，剩下的下一轮再继续」。</p>
 <hr />
 <p><strong>下一课推荐</strong>：<a href="#lesson-3">03 长时与定时自动化</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
-<section class="lesson" id="lesson-3" data-lesson="3"><h1 id="lesson-3">03 · 场景：长时任务与定时自动化</h1>
+<section class="lesson" data-lesson="lesson-3"><h1 id="lesson-3">03 · 场景：长时任务与定时自动化</h1>
 <blockquote>
 <p>适合：需要「每天/每周自动产出报告、监控数据、无人值守跑任务」的人——运营、数据、市场、行政。
 难度：⭐ 进阶（碰一点命令行，照做即可）。
@@ -611,7 +669,7 @@ img{max-width:100%;border-radius:var(--radius-sm)}
 - headless 的审批与网页不同。把任务范围收窄（只读只写指定目录），或先在网页版确认该操作能被放行。</p>
 <hr />
 <p><strong>下一课推荐</strong>：<a href="#lesson-4">04 把 SOP 做成技能</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
-<section class="lesson" id="lesson-4" data-lesson="4"><h1 id="lesson-4">04 · 场景：把公司 SOP 做成「技能」，团队反复复用</h1>
+<section class="lesson" data-lesson="lesson-4"><h1 id="lesson-4">04 · 场景：把公司 SOP 做成「技能」，团队反复复用</h1>
 <blockquote>
 <p>适合：想把「团队的标准流程、固定格式、做事规矩」固化下来的人——部门负责人、运营主管、内容主编、HR、财务。
 门槛：⭐ 只需要会写一份说明文档（就是打字，不写代码）。
@@ -735,7 +793,7 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
 - 手动粘贴：每次都要复制、每次都会漏、换人就忘。skill：写一次，永久生效，团队共享，零重复劳动。</p>
 <hr />
 <p><strong>下一课推荐</strong>：<a href="#lesson-5">05 装社区插件</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
-<section class="lesson" id="lesson-5" data-lesson="5"><h1 id="lesson-5">05 · 场景：装社区插件，白嫖开源生态的能力</h1>
+<section class="lesson" data-lesson="lesson-5"><h1 id="lesson-5">05 · 场景：装社区插件，白嫖开源生态的能力</h1>
 <blockquote>
 <p>适合：想「一条命令给 DSH 加上新能力」的人——不用自己开发，直接装别人做好的插件。
 门槛：⭐ 会复制命令即可。
@@ -840,7 +898,7 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
 - 开发插件需要 TypeScript。但「分享一个 skill」（见 <a href="#lesson-4">04 课</a>）门槛低得多，先从那入手。</p>
 <hr />
 <p><strong>下一课推荐</strong>：<a href="#lesson-6">06 模型自由与成本控制</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
-<section class="lesson" id="lesson-6" data-lesson="6"><h1 id="lesson-6">06 · 场景：模型自由与成本控制</h1>
+<section class="lesson" data-lesson="lesson-6"><h1 id="lesson-6">06 · 场景：模型自由与成本控制</h1>
 <blockquote>
 <p>适合：想「换便宜模型省钱、接公司自有网关、对比不同模型效果」的人——管理者、技术负责人、成本敏感团队。
 前置：已完成 <a href="#lesson-1">01 快速上手</a>。</p>
@@ -923,7 +981,7 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
 - 已发送过请求的会话会保留自己日志里记录的模型；新会话用新默认值。</p>
 <hr />
 <p><strong>下一步</strong>：<a href="#lesson-7">附录 · 常规场景速查</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
-<section class="lesson" id="lesson-7" data-lesson="7"><h1 id="lesson-7">附录 · 常规场景速查</h1>
+<section class="lesson" data-lesson="lesson-7"><h1 id="lesson-7">附录 · 常规场景速查</h1>
 <blockquote>
 <p>这一页是「DSH 的常规用法」速查表。<strong>这些活 Claude Code / Codex 其实也能做</strong>，DSH 的独特优势只有一个：<strong>同样的事，用便宜模型，成本低一个数量级。</strong>
 用法都一样：启动 <code>dsh</code> → 选工作区 → 复制提示词 → 发送。提示词里把「路径」「文件名」「产品名」换成你自己的。</p>
@@ -1006,23 +1064,121 @@ description: 按公司标准模板生成周报。当用户要求写周报、周�
 
 <script>
 (function(){
-  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-h1,.toc-h2'));
-  var map = {};
-  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
-  var lessons = document.querySelectorAll('.lesson');
-  var headings = document.querySelectorAll('.lesson h1[id],.lesson h2[id]');
-  if(!('IntersectionObserver' in window)) return;
-  function clear(){ links.forEach(function(a){ a.classList.remove('active'); }); }
-  var obs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){
-        var id = e.target.getAttribute('id');
-        clear();
-        if(map[id]) map[id].classList.add('active');
-      }
+  var KEY = "dsh-course-progress-v1";
+  var LEVELS = [
+    {id:"lesson-0", diff:1, goal:"认识 DSH 为什么值得学，确认三件准备事，建立 30 秒心智模型"},
+    {id:"lesson-1", diff:1, goal:"30 分钟跑起来，完成第一次真实任务"},
+    {id:"lesson-2", diff:2, goal:"独立完成一次大批量批处理"},
+    {id:"lesson-3", diff:3, goal:"跑通长时任务加定时自动执行"},
+    {id:"lesson-4", diff:2, goal:"把一份公司 SOP 做成团队可复用的技能"},
+    {id:"lesson-5", diff:1, goal:"安装并验证一个社区插件"},
+    {id:"lesson-6", diff:2, goal:"切换模型与提供方，看懂成本账"},
+    {id:"lesson-7", diff:1, goal:"用速查表覆盖常规场景"}
+  ];
+  var DIFF = {1:"简单", 2:"中等", 3:"困难"};
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {} }catch(e){ return {} } }
+  var st = load();
+  if(!Array.isArray(st.done)) st.done = [];
+  if(typeof st.free !== "boolean") st.free = false;
+  if(!st.current) st.current = "lesson-0";
+  function save(){ localStorage.setItem(KEY, JSON.stringify(st)); }
+  function done(id){ return st.done.indexOf(id) >= 0; }
+  function stars(n){ var s=""; for(var i=0;i<3;i++) s += i<n?"★":"☆"; return s; }
+  function idx(id){ for(var i=0;i<LEVELS.length;i++) if(LEVELS[i].id===id) return i; return 0; }
+  function unlocked(i){ return st.free || i===0 || done(LEVELS[i-1].id); }
+  function title(id){ var sec=document.querySelector('section[data-lesson="'+id+'"]'); var h=sec&&sec.querySelector('h1'); return h?h.textContent.trim():id; }
+  function toast(msg){
+    var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+    clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+  function fill(){
+    var earned=0; st.done.forEach(function(id){ earned += LEVELS[idx(id)].diff; });
+    document.getElementById("progFill").style.width = (st.done.length/LEVELS.length*100)+"%";
+    document.getElementById("progTxt").textContent = "已完成 "+st.done.length+"/"+LEVELS.length+" 关 · 星星 "+earned+"/"+LEVELS.reduce(function(a,b){return a+b.diff},0);
+  }
+  function renderNav(){
+    var nav=document.getElementById("levelNav"); if(!nav) return;
+    nav.innerHTML="";
+    LEVELS.forEach(function(L,i){
+      var b=document.createElement("button");
+      b.className="lvl-btn"+(done(L.id)?" done":"")+(unlocked(i)?"":" locked");
+      b.innerHTML='<span class="no">'+(i+1)+'</span><span>'+L.id.slice(7)+'</span><span class="st">'+(done(L.id)?"✓":unlocked(i)?"▶":"🔒")+'</span>';
+      b.title=title(L.id);
+      b.onclick=function(){ openLevel(L.id); };
+      nav.appendChild(b);
     });
-  }, {rootMargin:'-10% 0px -80% 0px', threshold:0});
-  headings.forEach(function(h){ obs.observe(h); });
+  }
+  function renderMap(){
+    var map=document.getElementById("levelMap"); map.innerHTML="";
+    LEVELS.forEach(function(L,i){
+      var ok=unlocked(i);
+      var c=document.createElement("div");
+      c.className="lvlcard"+(ok?"":" locked");
+      c.innerHTML='<div class="top"><span class="no">关卡 '+(i+1)+'</span><span class="stars">'+stars(L.diff)+'</span></div>'+
+        '<h3>'+title(L.id)+'</h3><div class="goal">'+L.goal+'</div>'+
+        '<div class="foot"><span class="chip'+(done(L.id)?" done":"")+'">'+(done(L.id)?"已完成打卡":ok?"难度 "+DIFF[L.diff]:"未解锁")+'</span>'+
+        '<span style="font-size:12.5px;color:var(--muted)">'+DIFF[L.diff]+'</span></div>';
+      c.onclick=function(){ if(ok) openLevel(L.id); else toast("先完成上一关，才能解锁本关"); };
+      map.appendChild(c);
+    });
+  }
+  function renderLessonNav(id){
+    var wrap=document.getElementById("lessonNav"); if(!wrap) return;
+    var sec=document.querySelector('section[data-lesson="'+id+'"]'); if(!sec) return;
+    var links=sec.querySelectorAll("h2[id],h3[id]"); wrap.innerHTML="";
+    if(!links.length){ wrap.style.display="none"; return; }
+    wrap.style.display="flex";
+    Array.prototype.forEach.call(links,function(h){
+      var a=document.createElement("a"); a.href="#"+h.id; a.textContent=h.textContent.trim(); wrap.appendChild(a);
+    });
+  }
+  function renderBanner(id){
+    var old=document.getElementById("lvlBanner"); if(old) old.remove();
+    var i=idx(id), L=LEVELS[i], ok=done(id);
+    var b=document.createElement("div"); b.id="lvlBanner"; b.className="lvl-banner";
+    b.innerHTML='<div class="meta"><h2>关卡 '+(i+1)+' · '+title(id)+'</h2>'+
+      '<p class="goal">挑战目标：'+L.goal+' · 难度 '+DIFF[L.diff]+' '+stars(L.diff)+'</p></div>'+
+      '<div class="acts">'+
+      (i>0?'<button class="btn ghost sm" data-act="prev">上一关</button>':'')+
+      '<button class="btn '+(ok?"ghost":"primary")+' sm" data-act="checkin">'+(ok?"重新打卡":"打卡 · 完成本关")+'</button>'+
+      (i<LEVELS.length-1?'<button class="btn primary sm" data-act="next">下一关</button>':'')+
+      '</div>';
+    var sec=document.querySelector('section[data-lesson="'+id+'"]');
+    sec.parentNode.insertBefore(b, sec);
+    Array.prototype.forEach.call(b.querySelectorAll("[data-act]"),function(btn){
+      btn.onclick=function(){
+        var act=btn.getAttribute("data-act");
+        if(act==="prev") openLevel(LEVELS[i-1].id);
+        else if(act==="next") openLevel(LEVELS[i+1].id);
+        else {
+          if(!ok){ st.done.push(id); save(); toast("第 "+(i+1)+" 关打卡成功，下一关已解锁"); }
+          else { toast("本关已打卡，复习愉快"); }
+          openLevel(id);
+        }
+      };
+    });
+  }
+  function openLevel(id){
+    var i=idx(id);
+    if(!unlocked(i)){ toast("先完成上一关，才能解锁本关"); return; }
+    st.current=id; save();
+    Array.prototype.forEach.call(document.querySelectorAll(".lesson"),function(s){
+      s.style.display = (s.getAttribute("data-lesson")===id) ? "" : "none";
+    });
+    renderBanner(id); renderLessonNav(id); renderMap(); renderNav(); fill();
+    document.querySelector(".main").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+  document.getElementById("freeMode").checked = st.free;
+  document.getElementById("freeMode").addEventListener("change", function(){
+    st.free=this.checked; save(); openLevel(st.current);
+  });
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    if(!confirm("确定清空全部闯关进度吗？")) return;
+    st.done=[]; st.current="lesson-0"; save(); openLevel("lesson-0"); toast("进度已重置");
+  });
+  var navHost=document.querySelector(".sidebar .side-links");
+  if(navHost){ var nav=document.createElement("nav"); nav.id="levelNav"; nav.className="lvl-nav"; navHost.insertAdjacentElement("afterend", nav); }
+  openLevel(st.current);
 })();
 </script>
 

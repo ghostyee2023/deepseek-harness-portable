@@ -2,7 +2,7 @@
 
 > GitHub 仓库：<https://github.com/ghostyee2023/deepseek-harness-portable>
 > 下载发布包：<https://github.com/ghostyee2023/deepseek-harness-portable/releases>
-> 配套课程：[DSH 职场实操系列课程](course.html)
+> 配套课程：[DSH 职场实操系列课程（闯关打卡式）](course.html)
 
 把 DeepSeek Harness 装进一个文件夹：**解压即用、免安装、自动升级、独立应用窗口，数据全在本地**。
 
