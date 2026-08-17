@@ -40,6 +40,7 @@ Copy-Item -LiteralPath (Join-Path $root 'launcher\pack-assets\README.txt') -Dest
 
 Write-Host 'Adding usage webpage...'
 Copy-Item -LiteralPath (Join-Path $root 'docs\usage.html') -Destination (Join-Path $stage 'usage.html')
+Copy-Item -LiteralPath (Join-Path $root 'docs\usage.md') -Destination (Join-Path $stage 'usage.md')
 
 $zip = Join-Path $out ("deepseek-harness-portable-win64-" + $version + ".zip")
 if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
