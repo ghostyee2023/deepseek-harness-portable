@@ -6,65 +6,88 @@
 <title>DSH 职场实操系列课程 · 用 DeepSeek Harness 干活</title>
 <style>
 :root{
-  --ink:#1f2937;--muted:#6b7280;--brand:#1e40af;--brand-2:#3b82f6;
-  --bg:#ffffff;--panel:#f6f8fb;--line:#e5e7eb;--code-bg:#0f172a;--code-ink:#e2e8f0;
+  --bg:#f7f8fb;--surface:#ffffff;--surface-2:#eef1f7;
+  --text:#171a21;--muted:#5b6270;--line:rgba(23,26,33,.09);
+  --brand:#1e63f0;--brand-soft:rgba(30,99,240,.09);
+  --code-bg:#0f172a;--code-ink:#e2e8f0;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 1px 2px rgba(23,26,33,.05),0 8px 24px rgba(23,26,33,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0b0f17;--surface:#111722;--surface-2:#151c2a;
+    --text:#e7eaf2;--muted:#9aa3b5;--line:rgba(231,234,242,.1);
+    --brand:#5b8cff;--brand-soft:rgba(91,140,255,.14);
+    --code-bg:#0a0f1a;--code-ink:#dbe4f4;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35);
+  }
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.75;background:var(--bg)}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--text);line-height:1.75;background:var(--bg)}
 a{color:var(--brand);text-decoration:none}
 a:hover{text-decoration:underline}
 
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:296px;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:24px 16px 40px}
-.sidebar .brand{font-size:17px;font-weight:700;color:var(--brand);margin-bottom:6px;padding:0 10px}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:288px;overflow-y:auto;background:var(--surface);border-right:1px solid var(--line);padding:22px 14px 40px}
+.sidebar .brand{font-size:16px;font-weight:700;color:var(--brand);margin:0 10px 4px}
 .sidebar .brand small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:2px}
-.toc-group{margin-top:14px}
-.toc-h1{display:block;font-size:14px;font-weight:700;color:var(--ink);padding:5px 10px;border-radius:6px}
-.toc-h1:hover{background:#e8eefb;text-decoration:none}
-.toc-h2{display:block;font-size:12.5px;color:var(--muted);padding:2px 10px 2px 22px;border-left:2px solid transparent}
+.sidebar .brand small b{color:var(--brand);font-weight:600}
+.sidebar .side-links{display:flex;gap:12px;font-size:12.5px;padding:0 10px;margin:10px 0 4px}
+.toc-group{margin-top:12px}
+.toc-h1{display:block;font-size:13.5px;font-weight:700;color:var(--text);padding:6px 10px;border-radius:8px}
+.toc-h1:hover{background:var(--surface-2);text-decoration:none}
+.toc-h2{display:block;font-size:12.5px;color:var(--muted);padding:3px 10px 3px 24px;border-left:2px solid transparent}
 .toc-h2:hover{color:var(--brand);text-decoration:none}
-.toc-h1.active,.toc-h2.active{color:var(--brand);background:#e3ecfb}
+.toc-h1.active,.toc-h2.active{color:var(--brand);background:var(--brand-soft)}
 .toc-h2.active{border-left:2px solid var(--brand)}
 
-.main{margin-left:296px;padding:40px 56px 80px;max-width:900px}
+.main{margin-left:288px;padding:0 56px 80px;max-width:920px}
 .lesson{padding-top:8px}
-h1{font-size:28px;line-height:1.3;margin:32px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--line);scroll-margin-top:20px}
-h2{font-size:21px;margin:30px 0 12px;scroll-margin-top:20px}
-h3{font-size:17px;margin:22px 0 10px}
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin:0 -56px 18px;padding:12px 56px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar .crumb{font-size:13px;color:var(--muted)}
+.topbar .crumb a{color:var(--brand)}
+h1{font-size:30px;line-height:1.3;margin:34px 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line);scroll-margin-top:20px;letter-spacing:-.01em}
+h2{font-size:21px;margin:32px 0 12px;scroll-margin-top:20px}
+h3{font-size:17px;margin:24px 0 10px}
 p{margin:10px 0}
-strong{color:#111827}
-code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:.88em;background:#eef1f6;padding:2px 6px;border-radius:4px;color:#b91c1c}
-pre{background:var(--code-bg);color:var(--code-ink);padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.6;margin:14px 0}
+strong{color:var(--text)}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:.88em;background:var(--surface-2);padding:2px 6px;border-radius:6px;color:var(--brand)}
+pre{background:var(--code-bg);color:var(--code-ink);padding:16px 18px;border-radius:var(--radius);overflow-x:auto;line-height:1.6;margin:14px 0;box-shadow:var(--shadow)}
 pre code{background:transparent;color:var(--code-ink);padding:0;font-size:.86em}
-blockquote{border-left:4px solid var(--brand-2);background:#f0f6ff;margin:14px 0;padding:10px 16px;border-radius:0 8px 8px 0;color:#334155}
+blockquote{border-left:3px solid var(--brand);background:var(--brand-soft);margin:14px 0;padding:10px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;color:var(--text)}
 blockquote p{margin:4px 0}
-table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
-th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
-th{background:#eef3fc;font-weight:600;color:#1e3a8a}
-tr:nth-child(even) td{background:#fafbfe}
+.notice{background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 26%,transparent);border-left:4px solid var(--brand);border-radius:var(--radius-sm);padding:13px 18px;margin:14px 0;font-size:14.5px;color:var(--text)}
+.notice a{font-weight:600}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm)}
+th,td{border-bottom:1px solid var(--line);padding:9px 13px;text-align:left;vertical-align:top}
+tr:last-child td{border-bottom:none}
+th{background:var(--surface-2);font-weight:600;color:var(--muted)}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 ul,ol{padding-left:24px;margin:10px 0}
 li{margin:4px 0}
-img{max-width:100%}
-
-.topbar{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin:-40px -56px 0;padding:14px 56px}
-.topbar .crumb{font-size:13px;color:var(--muted)}
+img{max-width:100%;border-radius:var(--radius-sm)}
 
 @media print{
   .sidebar,.topbar{display:none}
-  .main{margin-left:0;padding:0}
+  .main{margin-left:0;padding:0;max-width:none}
 }
 
-@media (max-width:860px){
+@media (max-width:900px){
   .sidebar{display:none}
-  .main{margin-left:0;padding:24px 20px}
-  .topbar{margin:-24px -20px 0;padding:12px 20px}
+  .main{margin-left:0;padding:0 20px 60px}
+  .topbar{margin:0 -20px 16px;padding:12px 20px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none !important;animation:none !important}
 }
 </style>
 </head>
 <body>
 <aside class="sidebar">
-  <div class="brand">DSH 职场实操<small>用 DeepSeek Harness 干活 · 课程版本 v0.1.0</small></div>
+  <div class="brand">DSH 职场实操<small>用 DeepSeek Harness 干活 · 课程版本 <b>v0.1.0</b></small></div>
+  <div class="side-links"><a href="index.html">使用指南</a><a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub ↗</a></div>
   <div class="toc-group">
 <a class="toc-h1" href="#lesson-0">DSH 职场实操系列课程</a>
 <a class="toc-h2" href="#lesson-0-1">为什么是 DSH，而不是 Claude Code / Codex</a>
@@ -140,7 +163,7 @@ img{max-width:100%}
 </aside>
 <main class="main">
   <div class="topbar"><span class="crumb">DSH 职场实操系列课程 · v0.1.0</span> <span class="crumb"><a href="index.html">使用指南</a> · <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub</a></span></div>
-  <div style="background:#f0f6ff;border:1px solid #dbe7ff;border-left:4px solid var(--brand-2);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px">
+  <div class="notice">
     💡 本课程配套 <strong>DeepSeek Harness 便携版</strong>（解压即用、免安装、自动升级）：
     <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub 仓库</a> ·
     <a href="https://github.com/ghostyee2023/deepseek-harness-portable/releases" target="_blank" rel="noopener">下载发布包</a> ·
@@ -339,7 +362,7 @@ img{max-width:100%}
 3. 用大白话回复你</p>
 <p>这就完成了第一次任务。</p>
 <hr />
-<h2 id="lesson-1-6">六、第五步：理解「审批」——这是你唯一要会的「把关」</h2>
+<h2 id="lesson-1-6">六、第五步：理解「审批」，这是你唯一要会的「把关」</h2>
 <p>当 dsh 要做<strong>有风险的事</strong>（改文件、删文件、跑命令）时，它会停下来问你：</p>
 <blockquote>
 <p>是否允许执行 <code>xxx</code>？</p>

@@ -2,9 +2,19 @@
 
 把 DeepSeek Harness 装进一个文件夹：**解压即用、免安装、自动升级、独立应用窗口，数据全在本地**。
 
-> 详细使用指南：[docs/usage.md](docs/usage.md)（GitHub 直接渲染）· [docs/index.html](docs/index.html)（网页版）· [docs/course.html](docs/course.html)（职场实操课程）
->
-> GitHub 仓库：https://github.com/ghostyee2023/deepseek-harness-portable
+[![license](https://img.shields.io/badge/license-MIT-1e63f0)](LICENSE)
+[![release](https://img.shields.io/badge/release-v0.1.0-1e63f0)](https://github.com/ghostyee2023/deepseek-harness-portable/releases)
+[![platform](https://img.shields.io/badge/platform-win64%20%7C%20macOS-lightgrey)](launcher/build.ps1)
+[![pages](https://img.shields.io/badge/pages-online-1e63f0)](https://ghostyee2023.github.io/deepseek-harness-portable/)
+
+## 文档入口
+
+| 内容 | 地址 |
+|---|---|
+| 使用指南（网页版） | https://ghostyee2023.github.io/deepseek-harness-portable/ |
+| 职场实操课程（网页版） | https://ghostyee2023.github.io/deepseek-harness-portable/course.html |
+| 使用指南（Markdown） | [docs/usage.md](docs/usage.md) |
+| 下载发布包 | [Releases](https://github.com/ghostyee2023/deepseek-harness-portable/releases) |
 
 ## 特性
 
@@ -16,22 +26,22 @@
 - **数据本地化**：聊天记录、配置、凭据都在 `runtime\dsh-home`，整个文件夹即备份
 - **双平台**：Windows 现成 exe；macOS 用 `build.sh` 自行构建
 
-## 下载安装
+## 快速开始
 
-从 [Releases](https://github.com/ghostyee2023/deepseek-harness-portable/releases) 下载 `deepseek-harness-portable-win64-vX.Y.Z.zip`：
-
-1. 解压到任意目录（U 盘也可以）
-2. 双击 `dsh-web.exe`（首次运行需联网初始化，约几分钟；SmartScreen 提示点“仍要运行”）
+1. 从 [Releases](https://github.com/ghostyee2023/deepseek-harness-portable/releases) 下载
+   `deepseek-harness-portable-win64-v0.1.0.zip` 并解压
+2. 双击 `dsh-web.exe`（首次运行需联网初始化，SmartScreen 提示点“仍要运行”）
 3. 在界面设置里配置你的模型 API Key
-4. 可选：双击 `setup.cmd` —— 桌面快捷方式 / 开机自启 / 托盘 / 安装 Codex 同步插件
+4. 可选：双击 `setup.cmd`，按需选择快捷方式 / 开机自启 / 托盘 / Codex 插件
 
 ## 目录结构
 
 ```text
 dsh-portable-win64\
 ├── dsh-web.exe       启动器（双击即用，自动升级）
-├── setup.cmd         可选安装菜单（快捷方式/自启/托盘/插件）
+├── setup.cmd         可选安装菜单
 ├── usage.html        使用指南
+├── course.html       职场实操课程
 ├── runtime\
 │   ├── node_modules\ dsh 包本体
 │   └── dsh-home\     用户数据（聊天记录、配置、凭据）
@@ -65,17 +75,17 @@ chmod +x launcher/build.sh && launcher/build.sh
 /codex-sync sync recent:50
 ```
 
-插件自动查找 Codex（`codexHome` 配置 → `CODEX_HOME` → `~/.codex`），草稿会话自动跳过，已导入的自动跳过。
+插件自动查找 Codex（`codexHome` 配置 → `CODEX_HOME` → `~/.codex`），草稿会话自动跳过。
 
 ## 数据与隐私
 
-- 所有用户数据都在 `runtime\dsh-home`，整个文件夹拷贝即备份/迁移
-- 发布包（`pack.ps1` 产物）**不包含**任何个人数据
+- 所有用户数据都在 `runtime\dsh-home`，整个文件夹拷贝即备份 / 迁移
+- 发布包（`pack.ps1` 产物）不包含任何个人数据
 - 卸载 = 删除文件夹，不留任何残留
 
 ## 常见问题
 
-见 [docs/usage.md](docs/usage.md) 的 FAQ 章节：SmartScreen、首次联网、关窗停服、端口/代理、历史加载失败修复、Mac 构建等。
+见 [使用指南](https://ghostyee2023.github.io/deepseek-harness-portable/) 的 FAQ 章节：SmartScreen、首次联网、关窗停服、端口 / 代理、历史加载失败修复、Mac 构建等。
 
 ## License
 
