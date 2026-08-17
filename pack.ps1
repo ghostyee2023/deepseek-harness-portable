@@ -4,6 +4,7 @@ $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $dist = Join-Path $root 'dist'
 $out = Join-Path $root 'release'
 $stage = Join-Path $out 'dsh-portable-win64'
+$version = '0.1.0'
 
 if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $stage | Out-Null
@@ -40,7 +41,7 @@ Copy-Item -LiteralPath (Join-Path $root 'launcher\pack-assets\README.txt') -Dest
 Write-Host 'Adding usage webpage...'
 Copy-Item -LiteralPath (Join-Path $root 'docs\usage.html') -Destination (Join-Path $stage 'usage.html')
 
-$zip = Join-Path $out 'dsh-portable-win64.zip'
+$zip = Join-Path $out ("deepseek-harness-portable-win64-" + $version + ".zip")
 if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
 Write-Host 'Compressing (this can take a minute)...'
 Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip -CompressionLevel Optimal
