@@ -2,7 +2,9 @@
 
 把 DeepSeek Harness 装进一个文件夹：**解压即用、免安装、自动升级、独立应用窗口，数据全在本地**。
 
-> 详细图文使用指南：[docs/usage.html](docs/usage.html)
+> 详细使用指南：[docs/usage.md](docs/usage.md)（GitHub 直接渲染）· [docs/usage.html](docs/usage.html)（网页版）
+>
+> GitHub 仓库：https://github.com/ghostyee2023/deepseek-harness-portable
 
 ## 特性
 
@@ -73,7 +75,7 @@ chmod +x launcher/build.sh && launcher/build.sh
 
 ## 常见问题
 
-见 [docs/usage.html](docs/usage.html) 的 FAQ 章节：SmartScreen、首次联网、关窗停服、端口/代理、历史加载失败修复、Mac 构建等。
+见 [docs/usage.md](docs/usage.md) 的 FAQ 章节：SmartScreen、首次联网、关窗停服、端口/代理、历史加载失败修复、Mac 构建等。
 
 ## License
 
