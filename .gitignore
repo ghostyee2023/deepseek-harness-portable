@@ -1,0 +1,25 @@
+# build / runtime artifacts (large, generated)
+dist/
+release/
+launcher/sea-prep.blob
+
+# logs & backups
+*.log
+*.bak
+
+# unrelated local content
+agent-intro/
+github/
+.pnpm-store/
+.dsh-vision-research/
+.research-vision/
+dsh-vision-research/
+DSH职场课程/
+DSH最佳实践入门课程.md
+DSH视觉插件调研报告.md
+DSH职场课程.html
+DSH职场课程.md
+
+# OS / editor
+Thumbs.db
+.DS_Store
