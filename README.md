@@ -2,7 +2,7 @@
 
 把 DeepSeek Harness 装进一个文件夹：**解压即用、免安装、自动升级、独立应用窗口，数据全在本地**。
 
-> 详细使用指南：[docs/usage.md](docs/usage.md)（GitHub 直接渲染）· [docs/usage.html](docs/usage.html)（网页版）
+> 详细使用指南：[docs/usage.md](docs/usage.md)（GitHub 直接渲染）· [docs/index.html](docs/index.html)（网页版）· [docs/course.html](docs/course.html)（职场实操课程）
 >
 > GitHub 仓库：https://github.com/ghostyee2023/deepseek-harness-portable
 

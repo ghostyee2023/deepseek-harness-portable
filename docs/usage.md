@@ -2,6 +2,7 @@
 
 > GitHub 仓库：<https://github.com/ghostyee2023/deepseek-harness-portable>
 > 下载发布包：<https://github.com/ghostyee2023/deepseek-harness-portable/releases>
+> 配套课程：[DSH 职场实操系列课程](course.html)
 
 把 DeepSeek Harness 装进一个文件夹：**解压即用、免安装、自动升级、独立应用窗口，数据全在本地**。
 
@@ -29,7 +30,8 @@
 dsh-portable-win64\
 ├── dsh-web.exe       启动器（双击即用，自动升级）
 ├── setup.cmd         可选安装菜单（快捷方式/自启/托盘/插件）
-├── usage.html        使用指南
+├── usage.html        使用指南（网页版）
+├── course.html       职场实操课程
 ├── runtime\
 │   ├── node_modules\ dsh 包本体
 │   └── dsh-home\     用户数据（聊天记录、配置、凭据）

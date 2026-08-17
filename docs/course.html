@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSH 职场实操系列课程 · 用 DeepSeek Harness 干活</title>
+<style>
+:root{
+  --ink:#1f2937;--muted:#6b7280;--brand:#1e40af;--brand-2:#3b82f6;
+  --bg:#ffffff;--panel:#f6f8fb;--line:#e5e7eb;--code-bg:#0f172a;--code-ink:#e2e8f0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.75;background:var(--bg)}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:296px;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:24px 16px 40px}
+.sidebar .brand{font-size:17px;font-weight:700;color:var(--brand);margin-bottom:6px;padding:0 10px}
+.sidebar .brand small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:2px}
+.toc-group{margin-top:14px}
+.toc-h1{display:block;font-size:14px;font-weight:700;color:var(--ink);padding:5px 10px;border-radius:6px}
+.toc-h1:hover{background:#e8eefb;text-decoration:none}
+.toc-h2{display:block;font-size:12.5px;color:var(--muted);padding:2px 10px 2px 22px;border-left:2px solid transparent}
+.toc-h2:hover{color:var(--brand);text-decoration:none}
+.toc-h1.active,.toc-h2.active{color:var(--brand);background:#e3ecfb}
+.toc-h2.active{border-left:2px solid var(--brand)}
+
+.main{margin-left:296px;padding:40px 56px 80px;max-width:900px}
+.lesson{padding-top:8px}
+h1{font-size:28px;line-height:1.3;margin:32px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--line);scroll-margin-top:20px}
+h2{font-size:21px;margin:30px 0 12px;scroll-margin-top:20px}
+h3{font-size:17px;margin:22px 0 10px}
+p{margin:10px 0}
+strong{color:#111827}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:.88em;background:#eef1f6;padding:2px 6px;border-radius:4px;color:#b91c1c}
+pre{background:var(--code-bg);color:var(--code-ink);padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.6;margin:14px 0}
+pre code{background:transparent;color:var(--code-ink);padding:0;font-size:.86em}
+blockquote{border-left:4px solid var(--brand-2);background:#f0f6ff;margin:14px 0;padding:10px 16px;border-radius:0 8px 8px 0;color:#334155}
+blockquote p{margin:4px 0}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:#eef3fc;font-weight:600;color:#1e3a8a}
+tr:nth-child(even) td{background:#fafbfe}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+ul,ol{padding-left:24px;margin:10px 0}
+li{margin:4px 0}
+img{max-width:100%}
+
+.topbar{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin:-40px -56px 0;padding:14px 56px}
+.topbar .crumb{font-size:13px;color:var(--muted)}
+
+@media print{
+  .sidebar,.topbar{display:none}
+  .main{margin-left:0;padding:0}
+}
+
+@media (max-width:860px){
+  .sidebar{display:none}
+  .main{margin-left:0;padding:24px 20px}
+  .topbar{margin:-24px -20px 0;padding:12px 20px}
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">DSH 职场实操<small>用 DeepSeek Harness 干活 · 课程版本 v0.1.0</small></div>
+  <div class="toc-group">
+<a class="toc-h1" href="#lesson-0">DSH 职场实操系列课程</a>
+<a class="toc-h2" href="#lesson-0-1">为什么是 DSH，而不是 Claude Code / Codex</a>
+<a class="toc-h2" href="#lesson-0-2">课程清单</a>
+<a class="toc-h2" href="#lesson-0-3">开始之前，先确认三件事</a>
+<a class="toc-h2" href="#lesson-0-4">通用心智模型（30 秒）</a>
+<a class="toc-h2" href="#lesson-0-5">风险提示（重要，先读）</a>
+</div>
+<div class="toc-group">
+<a class="toc-h1" href="#lesson-1">01 · 快速上手：30 分钟跑起来，完成第一次任务</a>
+<a class="toc-h2" href="#lesson-1-1">一、你要准备的东西</a>
+<a class="toc-h2" href="#lesson-1-2">二、第一步：启动 dsh</a>
+<a class="toc-h2" href="#lesson-1-3">三、第二步：配置模型（填 API Key）</a>
+<a class="toc-h2" href="#lesson-1-4">四、第三步：选择工作区（最重要的一步）</a>
+<a class="toc-h2" href="#lesson-1-5">五、第四步：发第一条指令</a>
+<a class="toc-h2" href="#lesson-1-6">六、第五步：理解「审批」——这是你唯一要会的「把关」</a>
+<a class="toc-h2" href="#lesson-1-7">七、验证你真的会了</a>
+<a class="toc-h2" href="#lesson-1-8">八、常见问题</a>
+</div>
+<div class="toc-group">
+<a class="toc-h1" href="#lesson-2">02 · 场景：大批量批处理（性价比之王）</a>
+<a class="toc-h2" href="#lesson-2-1">为什么这个场景 Claude Code / Codex 不划算</a>
+<a class="toc-h2" href="#lesson-2-2">这个场景能干什么（都是真实能跑的）</a>
+<a class="toc-h2" href="#lesson-2-3">操作步骤</a>
+<a class="toc-h2" href="#lesson-2-4">可直接复制的提示词</a>
+<a class="toc-h2" href="#lesson-2-5">关键技巧：让批量活「稳」的三个口诀</a>
+<a class="toc-h2" href="#lesson-2-6">预期结果</a>
+<a class="toc-h2" href="#lesson-2-7">常见问题</a>
+</div>
+<div class="toc-group">
+<a class="toc-h1" href="#lesson-3">03 · 场景：长时任务与定时自动化</a>
+<a class="toc-h2" href="#lesson-3-1">为什么这个场景 Claude Code / Codex 不划算</a>
+<a class="toc-h2" href="#lesson-3-2">典型场景</a>
+<a class="toc-h2" href="#lesson-3-3">第一步：先手动跑通一次 headless 任务</a>
+<a class="toc-h2" href="#lesson-3-4">第二步：让它定时自动跑</a>
+<a class="toc-h2" href="#lesson-3-5">进阶：DSH 内置的定时任务（了解即可）</a>
+<a class="toc-h2" href="#lesson-3-6">自动化任务的安全红线（必读）</a>
+<a class="toc-h2" href="#lesson-3-7">常见问题</a>
+</div>
+<div class="toc-group">
+<a class="toc-h1" href="#lesson-4">04 · 场景：把公司 SOP 做成「技能」，团队反复复用</a>
+<a class="toc-h2" href="#lesson-4-1">为什么这是 DSH 的特色</a>
+<a class="toc-h2" href="#lesson-4-2">先理解：skill 到底是什么</a>
+<a class="toc-h2" href="#lesson-4-3">动手做一个：公司周报技能</a>
+<a class="toc-h2" href="#lesson-4-4">更多可固化的 SOP 例子</a>
+<a class="toc-h2" href="#lesson-4-5">让团队共享一个技能库</a>
+<a class="toc-h2" href="#lesson-4-6">常见问题</a>
+</div>
+<div class="toc-group">
+<a class="toc-h1" href="#lesson-5">05 · 场景：装社区插件，白嫖开源生态的能力</a>
+<a class="toc-h2" href="#lesson-5-1">为什么这是 DSH 的特色</a>
+<a class="toc-h2" href="#lesson-5-2">去哪找插件</a>
+<a class="toc-h2" href="#lesson-5-3">怎么装</a>
+<a class="toc-h2" href="#lesson-5-4">怎么判断一个插件靠不靠谱（社区评分四把尺子）</a>
+<a class="toc-h2" href="#lesson-5-5">你也能分享插件（一步）</a>
+<a class="toc-h2" href="#lesson-5-6">常见问题</a>
+</div>
+<div class="toc-group">
+<a class="toc-h1" href="#lesson-6">06 · 场景：模型自由与成本控制</a>
+<a class="toc-h2" href="#lesson-6-1">为什么这是 DSH 的立身之本</a>
+<a class="toc-h2" href="#lesson-6-2">三种省钱玩法</a>
+<a class="toc-h2" href="#lesson-6-3">操作步骤：换模型 / 加提供方</a>
+<a class="toc-h2" href="#lesson-6-4">省钱实战建议</a>
+<a class="toc-h2" href="#lesson-6-5">常见问题</a>
+</div>
+<div class="toc-group">
+<a class="toc-h1" href="#lesson-7">附录 · 常规场景速查</a>
+<a class="toc-h2" href="#lesson-7-1">速查表</a>
+<a class="toc-h2" href="#lesson-7-2">几条通用提示词技巧（所有场景适用）</a>
+<a class="toc-h2" href="#lesson-7-3">两条跨场景红线</a>
+<a class="toc-h2" href="#lesson-7-4">回到主线</a>
+</div>
+</aside>
+<main class="main">
+  <div class="topbar"><span class="crumb">DSH 职场实操系列课程 · v0.1.0</span> <span class="crumb"><a href="index.html">使用指南</a> · <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub</a></span></div>
+  <div style="background:#f0f6ff;border:1px solid #dbe7ff;border-left:4px solid var(--brand-2);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px">
+    💡 本课程配套 <strong>DeepSeek Harness 便携版</strong>（解压即用、免安装、自动升级）：
+    <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub 仓库</a> ·
+    <a href="https://github.com/ghostyee2023/deepseek-harness-portable/releases" target="_blank" rel="noopener">下载发布包</a> ·
+    <a href="index.html">使用指南</a>
+  </div>
+  <section class="lesson" id="lesson-0" data-lesson="0"><h1 id="lesson-0">DSH 职场实操系列课程</h1>
+<blockquote>
+<p>用 DeepSeek Harness（<code>dsh</code>）干那些 <strong>Claude Code / Codex 做不了、或不划算</strong> 的活。
+面向普通职场人士——不要求会编程。每一课都落在<strong>一个非常确定的场景</strong>上，给你<strong>能直接复制粘贴的提示词</strong>和<strong>逐步操作步骤</strong>。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-0-1">为什么是 DSH，而不是 Claude Code / Codex</h2>
+<p>大多数 AI 编程助手（Claude Code、Codex、Cursor）都是<strong>绑定自家模型、闭源、面向「写代码」</strong>的产品。它们很好用，但有三个天花板，恰好是 DSH 的机会：</p>
+<table>
+<thead>
+<tr>
+<th>差异</th>
+<th>Claude Code / Codex</th>
+<th>DSH</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>模型</strong></td>
+<td>只能用它家模型（Claude / GPT）</td>
+<td><strong>模型自由</strong>：官方适配 DeepSeek，还能接任何 OpenAI 兼容端点</td>
+</tr>
+<tr>
+<td><strong>成本</strong></td>
+<td>Claude/GPT 单价高</td>
+<td>换 DeepSeek 后，<strong>实测成本约为 Claude 的 1/10～1/30</strong></td>
+</tr>
+<tr>
+<td><strong>开放性</strong></td>
+<td>闭源，改不了里子</td>
+<td>MIT 开源，可自定义技能、装社区插件、自托管进服务器</td>
+</tr>
+<tr>
+<td><strong>形态</strong></td>
+<td>交互式终端编码助手</td>
+<td>还能 <code>headless</code> 无人值守跑、定时跑</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话结论</strong>：凡是要<strong>「量大、时间长、反复做、要省钱、要无人值守」</strong>的活，DSH 的性价比碾压；而「单次、交互式、纯写代码」的活，Claude/Codex 更成熟。</p>
+<blockquote>
+<p>⚠️ 诚实提示：DSH 目前是「开发者预览版」，界面和命令以后可能变。本课程基于当前版本撰写，若某一步和你屏幕不一致，以屏幕为准。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-0-2">课程清单</h2>
+<p>前 6 课是 DSH 的「差异化主场」，附录是「Claude 也能做、但 DSH 更省」的常规速查。</p>
+<table>
+<thead>
+<tr>
+<th>课</th>
+<th>场景</th>
+<th>为什么 Claude/Codex 不行或不划算</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#lesson-1">01 快速上手</a></td>
+<td>30 分钟跑起来（<strong>必读</strong>）</td>
+<td>地基</td>
+</tr>
+<tr>
+<td><a href="#lesson-2">02 大批量批处理</a></td>
+<td>一次处理几十到几千个文件/数据/文章</td>
+<td>批量 = 烧钱，DSH 换便宜模型省几十倍</td>
+</tr>
+<tr>
+<td><a href="#lesson-3">03 长时与定时自动化</a></td>
+<td>每天/每周自动出报告、监控</td>
+<td>开源可自托管 + 便宜模型，才敢「天天跑」</td>
+</tr>
+<tr>
+<td><a href="#lesson-4">04 把 SOP 做成技能</a></td>
+<td>把公司标准流程固化，团队反复复用</td>
+<td>DSH 的 skills 机制是特色，Claude 没有同等的开放技能库</td>
+</tr>
+<tr>
+<td><a href="#lesson-5">05 装社区插件</a></td>
+<td>一条命令装别人做好的能力</td>
+<td>开源生态，白嫖别人的成果</td>
+</tr>
+<tr>
+<td><a href="#lesson-6">06 模型自由与成本控制</a></td>
+<td>换便宜模型、接公司网关、多模型对比</td>
+<td>模型无关是 DSH 立身之本，Claude/Codex 锁死</td>
+</tr>
+<tr>
+<td><a href="#lesson-7">附录 常规场景速查</a></td>
+<td>整理文件/改稿/调研/表格/读代码</td>
+<td>这些 Claude 也能做，DSH 优势是「同样的事更省」</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lesson-0-3">开始之前，先确认三件事</h2>
+<ol>
+<li><strong>装了 Node.js</strong>（版本 22 或更高）——<a href="https://nodejs.org">nodejs.org</a> 下载，一路下一步即可。</li>
+<li><strong>有一个 DeepSeek API Key</strong>（<code>sk-...</code> 开头）——DeepSeek 开放平台申请。</li>
+<li><strong>会打开终端</strong>：Windows 搜 <code>PowerShell</code>，macOS 搜 <code>终端</code>。</li>
+</ol>
+<hr />
+<h2 id="lesson-0-4">通用心智模型（30 秒）</h2>
+<ul>
+<li><code>dsh</code> 是一个「AI 干活的环境」，它能<strong>读你的文件、写你的文件、在你电脑上跑命令、搜网页</strong>。</li>
+<li>你做的事只有三件：<strong>① 指定它干活的文件夹（工作区）→ ② 用大白话说清楚要什么 → ③ 它要动真格时你点头同意</strong>。</li>
+<li>核心经验：<strong>DSH 的能力边界 = 读文件 + 写文件 + 跑命令 + 搜网页 + 委派子任务</strong>。能拆成这几件事的活，它都能干；你的角色是<strong>说清需求 + 圈定范围 + 把关审批</strong>。</li>
+</ul>
+<hr />
+<h2 id="lesson-0-5">风险提示（重要，先读）</h2>
+<ol>
+<li><strong>先备份</strong>：让 AI 批量改/删文件前，先把原文件夹复制一份。</li>
+<li><strong>先小范围试</strong>：先拿几个文件试，确认对了再放大。</li>
+<li><strong>盯着审批</strong>：它要「写/删/跑命令」会问你，别一路全放行。</li>
+<li><strong>别喂敏感数据</strong>：API Key 背后是云端模型，公司机密、个人隐私文件慎用。</li>
+</ol></section>
+<section class="lesson" id="lesson-1" data-lesson="1"><h1 id="lesson-1">01 · 快速上手：30 分钟跑起来，完成第一次任务</h1>
+<blockquote>
+<p>目标：从零开始，30 分钟内启动 <code>dsh</code>，让它成功帮你完成一件小事。
+本课是后面所有场景的地基，<strong>请先完整走一遍</strong>。
+关于「DSH 和 Claude Code/Codex 到底差在哪、为什么选 DSH」，见<a href="#lesson-0">总目录</a>。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-1-1">一、你要准备的东西</h2>
+<table>
+<thead>
+<tr>
+<th>东西</th>
+<th>说明</th>
+<th>去哪弄</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node.js（22 或更高）</td>
+<td>跑 <code>dsh</code> 需要</td>
+<td><a href="https://nodejs.org">nodejs.org</a> 下载安装</td>
+</tr>
+<tr>
+<td>DeepSeek API Key</td>
+<td>模型「钥匙」，<code>sk-...</code> 开头</td>
+<td>DeepSeek 开放平台</td>
+</tr>
+<tr>
+<td>一个测试文件夹</td>
+<td>用来当「工作区」</td>
+<td>桌面新建一个，放几个文件进去</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lesson-1-2">二、第一步：启动 dsh</h2>
+<p>打开终端（Windows 用 PowerShell，macOS 用终端），输入：</p>
+<pre><code class="language-sh">npx @deepseek-ai/dsh web
+</code></pre>
+<p>回车后它会自动下载并启动，稍等片刻，屏幕上会打印一个地址：</p>
+<pre><code>http://127.0.0.1:3080
+</code></pre>
+<p>用浏览器打开这个地址，你会看到 dsh 的网页界面。</p>
+<blockquote>
+<p>💡 第一次运行 <code>npx</code> 会问「Ok to proceed?」之类的话，输入 <code>y</code> 回车即可。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-1-3">三、第二步：配置模型（填 API Key）</h2>
+<ol>
+<li>在网页界面右上角或侧边栏找到 <strong>设置（Settings）</strong>。</li>
+<li>进入 <strong>模型（Models）</strong> 页面。</li>
+<li>把 DeepSeek API Key 粘贴进去，点 <strong>保存</strong>。</li>
+</ol>
+<blockquote>
+<p>✅ 官方说明：模型路由保存后<strong>立即可用，不需要重启服务器</strong>。
+如果模型页提供多个模型选项，选默认的 <code>deepseek-chat</code>（或 <code>deepseek-reasoner</code>）即可。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-1-4">四、第三步：选择工作区（最重要的一步）</h2>
+<p>「工作区」就是 <strong>dsh 被允许干活的文件夹</strong>——它只能在这个文件夹范围内读文件、改文件、跑命令。</p>
+<ol>
+<li>点击界面上的 <strong>选择工作区（Select workspace）</strong>。</li>
+<li><strong>添加</strong>你准备的那个测试文件夹（注意：是添加 <code>dsh</code> 启动时所在的那个项目目录）。</li>
+<li>选中它。</li>
+</ol>
+<blockquote>
+<p>⚠️ 关键：<strong>选中工作区之前，聊天输入框是灰的、不能用。</strong> 这是刻意的安全设计——先圈定范围，再放行。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-1-5">五、第四步：发第一条指令</h2>
+<p>在工作区里放几个测试文件（比如随便放 2-3 个 <code>.txt</code> 文件），然后在输入框发送：</p>
+<pre><code>帮我看看这个工作区里有哪些文件，简单说明每个文件是什么。
+</code></pre>
+<p>它会：
+1. 先「看」工作区（用搜索文件的工具列出文件）
+2. 读文件内容
+3. 用大白话回复你</p>
+<p>这就完成了第一次任务。</p>
+<hr />
+<h2 id="lesson-1-6">六、第五步：理解「审批」——这是你唯一要会的「把关」</h2>
+<p>当 dsh 要做<strong>有风险的事</strong>（改文件、删文件、跑命令）时，它会停下来问你：</p>
+<blockquote>
+<p>是否允许执行 <code>xxx</code>？</p>
+</blockquote>
+<ul>
+<li>你点 <strong>允许</strong>，它继续。</li>
+<li>你点 <strong>拒绝</strong>，它换别的办法或停下来问你怎么做。</li>
+</ul>
+<p><strong>这是它最核心的安全机制</strong>：AI 可以「想」，但「动手」要不要放行，由你决定。</p>
+<hr />
+<h2 id="lesson-1-7">七、验证你真的会了</h2>
+<p>依次完成下面三件事，就算过关：</p>
+<ol>
+<li>✅ 浏览器里能看到 dsh 界面。</li>
+<li>✅ 它成功列出了你测试文件夹里的文件。</li>
+<li>✅ 让它「把工作区里的文件名改成全小写」，并观察它是<strong>先问你</strong>再动手，还是直接动手。</li>
+</ol>
+<hr />
+<h2 id="lesson-1-8">八、常见问题</h2>
+<p><strong>Q1：<code>npx</code> 命令卡住不动 / 报错？</strong>
+- 检查 Node 版本：<code>node -v</code>，要 ≥ 22。
+- 网络慢就多等一会儿，第一次要下载较多内容。</p>
+<p><strong>Q2：发消息没反应？</strong>
+- 检查是不是忘了「选择工作区」（输入框会提示）。
+- 检查 API Key 是否保存成功、是否还有额度。</p>
+<p><strong>Q3：它读不到我的文件？</strong>
+- 确认文件确实在「工作区」文件夹内。工作区之外的文件它默认碰不到。</p>
+<p><strong>Q4：Windows 和 macOS 有区别吗？</strong>
+- 使用体验基本一致。跑命令时，Windows 走 PowerShell（<code>pwsh</code>），macOS/Linux 走 <code>bash</code>，但<strong>你不需要自己敲命令</strong>，AI 会自己选择正确的方式。</p>
+<p><strong>Q5：关掉终端，dsh 就关了吗？</strong>
+- 是的。那个终端窗口就是 dsh 的「服务器」，关掉它就停了。下次再输入同样的启动命令即可，之前的工作区配置通常还在。</p>
+<hr />
+<p><strong>下一步</strong>：环境通了，直接跳到和你工作最相关的场景课，按步骤和提示词开干。</p></section>
+<section class="lesson" id="lesson-2" data-lesson="2"><h1 id="lesson-2">02 · 场景：大批量批处理（性价比之王）</h1>
+<blockquote>
+<p>适合：需要「一次处理几十～几千个文件/数据/文章」的人——运营、行政、数据、财务、内容团队。
+前置：已完成 <a href="#lesson-1">01 快速上手</a>。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-2-1">为什么这个场景 Claude Code / Codex 不划算</h2>
+<p><strong>核心：AI 是按「用了多少字（token）」计费的。</strong></p>
+<ul>
+<li>处理 1 个文件：DSH 和 Claude 成本差不多，无所谓。</li>
+<li>处理 1000 个文件：<strong>总 token 量 = 单个 × 1000</strong>，差价被放大 1000 倍。</li>
+<li>Claude / Codex 只能用 Claude / GPT 模型，单价高；DSH 换 DeepSeek，<strong>社区实测成本约为 Claude 的 1/10～1/30</strong>。</li>
+</ul>
+<p>同样一笔「批量改写 500 篇文章」的活：
+- Claude Code：可能烧掉几十到上百元
+- DSH + DeepSeek：可能只要几块钱</p>
+<p><strong>这就是 DSH 的性价比主场。</strong> 凡是「重复 × 大量」的活，都该用 DSH。</p>
+<hr />
+<h2 id="lesson-2-2">这个场景能干什么（都是真实能跑的）</h2>
+<table>
+<thead>
+<tr>
+<th>批量任务</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>批量重命名 / 归类文件</td>
+<td>几百个文件按类型分文件夹、按日期重命名</td>
+</tr>
+<tr>
+<td>批量改写 / 加摘要</td>
+<td>500 篇文章统一改成公众号风格、各加 3 句话摘要</td>
+</tr>
+<tr>
+<td>批量清洗数据</td>
+<td>几百行 CSV 统一日期格式、去掉乱码、去重</td>
+</tr>
+<tr>
+<td>批量翻译</td>
+<td>一个文件夹的文档统一翻成英文</td>
+</tr>
+<tr>
+<td>批量生成说明</td>
+<td>给每个文件/每个产品生成一段标准描述</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lesson-2-3">操作步骤</h2>
+<ol>
+<li>启动 <code>dsh</code>（<code>npx @deepseek-ai/dsh web</code>），打开 <code>http://127.0.0.1:3080</code>，填好 Key。</li>
+<li><strong>选择工作区</strong> = 放这批文件的文件夹（<strong>先拿一个子文件夹或几个文件试</strong>）。</li>
+<li>复制下面的提示词，替换「文件类型」「数量」等，发送。</li>
+</ol>
+<hr />
+<h2 id="lesson-2-4">可直接复制的提示词</h2>
+<h3>场景 A：批量重命名 + 归类（几百个文件）</h3>
+<pre><code>请整理工作区里的所有文件：按文件扩展名分类，把同类型移动到对应子文件夹
+（图片/、文档/、表格/、其他/）。
+先列出分类方案和每类数量，等我确认后再动手。处理完报告一共移动了多少个文件。
+</code></pre>
+<h3>场景 B：批量改写文章（规模化，核心场景）</h3>
+<pre><code>请把工作区里所有 .txt 文件逐一改写成公众号风格：
+- 每篇起 1 个标题，正文控制在 800 字以内
+- 输出到「改稿/」子文件夹，文件名保持原名
+先列出你打算处理的文件清单（共几篇），然后从第一篇开始，
+每处理完 10 篇汇报一次进度。全部完成后告诉我一共改了几篇、花了多久。
+</code></pre>
+<h3>场景 C：批量清洗 CSV 数据</h3>
+<pre><code>请处理工作区里的「原始数据.csv」：
+1. 把日期统一成 2026-08-16 这种格式
+2. 删除完全重复的行
+3. 金额列去掉「元」「￥」等字符，只留数字
+4. 把结果存成「清洗后数据.csv」
+先只处理前 20 行，把前后对比给我看，确认规则正确后再处理全部。
+</code></pre>
+<h3>场景 D：批量翻译一个文件夹的文档</h3>
+<pre><code>请把工作区里所有 .md 文件翻译成英文，存到「en/」子文件夹，文件名保持原名。
+先翻译 1 篇让我看质量，我确认风格后再批量处理剩余的全部。
+</code></pre>
+<hr />
+<h2 id="lesson-2-5">关键技巧：让批量活「稳」的三个口诀</h2>
+<ol>
+<li><strong>先小后大</strong>：提示词里明确写「先处理前 N 个，确认后再处理全部」——批量最容易在「规则理解错」上翻车，先用小样本对齐规则。</li>
+<li><strong>要求报进度</strong>：让它「每处理完 10 个汇报一次」，你心里有数，也能中途叫停。</li>
+<li><strong>断点续做</strong>：批量跑到一半停了，直接说「从上次停的地方继续」，它会读回已生成的文件接着干。</li>
+</ol>
+<hr />
+<h2 id="lesson-2-6">预期结果</h2>
+<ul>
+<li>工作区里出现 <code>改稿/</code>、<code>en/</code>、<code>清洗后数据.csv</code> 等产出。</li>
+<li>对话里能看到进度汇报。</li>
+<li>成本远低于用 Claude/Codex 跑同样的量。</li>
+</ul>
+<hr />
+<h2 id="lesson-2-7">常见问题</h2>
+<p><strong>Q：批量跑到一半停了 / 报错？</strong>
+- 让它「从停的地方继续」。若是某个文件损坏，让它「跳过这个文件，记录到跳过清单，继续处理后面的」。</p>
+<p><strong>Q：处理质量不统一？</strong>
+- 先用小样本对齐：给它看 2 个「你满意的结果」当范例，再批量。</p>
+<p><strong>Q：担心批量改错毁掉原文件？</strong>
+- 老规矩：<strong>先备份</strong>，并让它在提示词里「输出到新子文件夹，不要覆盖原文件」。</p>
+<p><strong>Q：一次让它处理 5000 个会不会崩？</strong>
+- 分批：每批 200-500 个，或让它「只处理前 500 个，剩下的下一轮再继续」。</p>
+<hr />
+<p><strong>下一课推荐</strong>：<a href="#lesson-3">03 长时与定时自动化</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
+<section class="lesson" id="lesson-3" data-lesson="3"><h1 id="lesson-3">03 · 场景：长时任务与定时自动化</h1>
+<blockquote>
+<p>适合：需要「每天/每周自动产出报告、监控数据、无人值守跑任务」的人——运营、数据、市场、行政。
+难度：⭐ 进阶（碰一点命令行，照做即可）。
+前置：已完成 <a href="#lesson-1">01 快速上手</a>。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-3-1">为什么这个场景 Claude Code / Codex 不划算</h2>
+<table>
+<thead>
+<tr>
+<th>顾虑</th>
+<th>Claude Code / Codex</th>
+<th>DSH</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>天天跑，费用</td>
+<td>Claude/GPT 单价高，长期烧钱</td>
+<td>换 DeepSeek，成本 1/10～1/30</td>
+</tr>
+<tr>
+<td>放进服务器</td>
+<td>需要商业授权/订阅，授权复杂</td>
+<td><strong>MIT 开源</strong>，随便部署</td>
+</tr>
+<tr>
+<td>无人值守</td>
+<td>主要面向交互式编码</td>
+<td>自带 <code>headless</code> 无头模式，跑完即退</td>
+</tr>
+</tbody>
+</table>
+<p>「定时自动化」的本质是<strong>长期、高频、无人看管</strong>——这三点恰好都是 DSH 的强项：便宜所以敢天天跑，开源所以能放服务器，<code>headless</code> 所以能无人值守。</p>
+<hr />
+<h2 id="lesson-3-2">典型场景</h2>
+<ul>
+<li>每天早上 9 点：汇总昨日销售/运营数据，生成日报存盘</li>
+<li>每周五：搜一次竞品动态，生成周报</li>
+<li>每隔几小时：抓某个页面，看价格/内容有没有变</li>
+<li>月初：把上月数据清洗、汇总、生成月报</li>
+</ul>
+<hr />
+<h2 id="lesson-3-3">第一步：先手动跑通一次 headless 任务</h2>
+<h3>1. 准备一个「任务描述文件」</h3>
+<p>在你要处理的工作区里新建 <code>任务.md</code>，写清楚要做什么：</p>
+<pre><code>读取工作区「数据」文件夹下最新的 CSV，生成日报：
+1. 统计昨日销售额和订单数，与前一天对比算出环比
+2. 输出成「日报-YYYY-MM-DD.md」保存到「日报」文件夹
+3. 只读数据、只写结果，不要改动任何原始文件
+</code></pre>
+<h3>2. 设置 API Key 环境变量</h3>
+<p><strong>Windows（PowerShell）：</strong></p>
+<pre><code class="language-powershell">$env:DEEPSEEK_API_KEY = &quot;sk-你的key&quot;
+</code></pre>
+<p><strong>macOS / Linux：</strong></p>
+<pre><code class="language-sh">export DEEPSEEK_API_KEY=&quot;sk-你的key&quot;
+</code></pre>
+<blockquote>
+<p>每次新开终端要重设一次（下一节教永久生效）。</p>
+</blockquote>
+<h3>3. 在工作区目录里运行</h3>
+<pre><code class="language-sh">npx @deepseek-ai/dsh --profile headless &quot;按任务.md里的要求生成日报&quot;
+</code></pre>
+<p>跑完退出。去工作区检查「日报」文件是否生成。</p>
+<blockquote>
+<p>本地已装 <code>dsh</code> 命令的话，用 <code>dsh --profile headless "..."</code> 等价。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-3-4">第二步：让它定时自动跑</h2>
+<h3>Windows：任务计划程序</h3>
+<ol>
+<li>开始菜单搜「<strong>任务计划程序</strong>」，打开 → 右侧「<strong>创建基本任务</strong>」。</li>
+<li>名称填「每日销售日报」，触发器选「每天」，设时间（如 9:00）。</li>
+<li>操作选「<strong>启动程序</strong>」，程序填 <code>powershell.exe</code>，参数填（替换路径和 key）：</li>
+</ol>
+<p><code>-Command "$env:DEEPSEEK_API_KEY='sk-你的key'; cd 'C:\你的工作区路径'; npx @deepseek-ai/dsh --profile headless '生成日报'"</code>
+4. 完成。到点自动运行。</p>
+<h3>macOS / Linux：cron</h3>
+<p>终端运行 <code>crontab -e</code>，加一行（每天 9 点）：</p>
+<pre><code class="language-sh">0 9 * * * export DEEPSEEK_API_KEY=&quot;sk-你的key&quot;; cd /你的工作区路径 &amp;&amp; npx @deepseek-ai/dsh --profile headless &quot;生成日报&quot;
+</code></pre>
+<hr />
+<h2 id="lesson-3-5">进阶：DSH 内置的定时任务（了解即可）</h2>
+<p><code>dsh</code> 自带<strong>定时任务（schedule）</strong>能力（<code>schedule_create</code> 等工具），能让 AI 在一个会话里自己安排定时触发。</p>
+<blockquote>
+<p>它是「需要额外选择启用」的插件，配置门槛较高，且依赖一个常驻会话进程。<strong>对普通职场人士，建议先用「操作系统定时任务 + headless」</strong>，稳定透明。熟悉后再探索内置 schedule。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-3-6">自动化任务的安全红线（必读）</h2>
+<ol>
+<li><strong>只读 + 只写结果</strong>：自动化任务让它「只读数据、把结果写到指定文件夹」，无人值守时绝不让它删文件、改源文件。</li>
+<li><strong>先手动、后定时</strong>：手动跑 2-3 次，确认输出稳定，再挂定时。</li>
+<li><strong>Key 别外泄</strong>：含 Key 的脚本别提交到公开仓库、别发群里。</li>
+<li><strong>留日志</strong>：让任务每次结果存成带日期的文件，出问题能回溯。</li>
+</ol>
+<hr />
+<h2 id="lesson-3-7">常见问题</h2>
+<p><strong>Q：headless 报「找不到命令」？</strong>
+- 确认在<strong>工作区目录</strong>里运行（已 <code>cd</code> 过去）。npx 首次运行需联网下载。</p>
+<p><strong>Q：定时任务没跑？</strong>
+- Windows 看「上次运行结果」；cron 看 <code>crontab -l</code> 是否保存成功。多半是路径或 Key 没设对。</p>
+<p><strong>Q：任务里说「没有权限」？</strong>
+- headless 的审批与网页不同。把任务范围收窄（只读只写指定目录），或先在网页版确认该操作能被放行。</p>
+<hr />
+<p><strong>下一课推荐</strong>：<a href="#lesson-4">04 把 SOP 做成技能</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
+<section class="lesson" id="lesson-4" data-lesson="4"><h1 id="lesson-4">04 · 场景：把公司 SOP 做成「技能」，团队反复复用</h1>
+<blockquote>
+<p>适合：想把「团队的标准流程、固定格式、做事规矩」固化下来的人——部门负责人、运营主管、内容主编、HR、财务。
+门槛：⭐ 只需要会写一份说明文档（就是打字，不写代码）。
+前置：已完成 <a href="#lesson-1">01 快速上手</a>。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-4-1">为什么这是 DSH 的特色</h2>
+<p>「技能（skill）」是 DSH 的一个核心机制：<strong>把一段「操作规范」写成文件，AI 会在合适的时机自动加载并严格遵守。</strong></p>
+<ul>
+<li>你每次让 AI 写周报，它都自动套用你公司的周报模板；</li>
+<li>你每次让 AI 写文案，它都自动遵守你定的语气和禁区；</li>
+<li>新人来了，不需要口口相传，skill 就是「会干活的说明书」。</li>
+</ul>
+<blockquote>
+<p>Claude Code 也有类似的 skills 概念，但 DSH 的优势在于：<strong>技能目录完全开放、放在你自己的电脑上、配合「模型自由」可以低成本批量复用</strong>——一个 skill 写一次，全团队用一年，每次调用都省下「重新解释需求」的口水成本。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-4-2">先理解：skill 到底是什么</h2>
+<p>一个 skill = <strong>一个文件夹里的一份 <code>SKILL.md</code> 说明文档</strong>，包含两样东西：</p>
+<ol>
+<li><strong>一句话说明</strong>（描述这个技能是干什么的、什么时候该用）</li>
+<li><strong>正文规则</strong>（具体怎么做，可以写得很详细）</li>
+</ol>
+<p>AI 每次干活前，会扫描这些技能；发现你的任务匹配某个技能，就自动加载它、照它说的做。</p>
+<hr />
+<h2 id="lesson-4-3">动手做一个：公司周报技能</h2>
+<h3>第一步：建目录</h3>
+<p>打开你的用户目录，新建路径：</p>
+<pre><code>~/.dsh/skills/weekly-report/SKILL.md
+</code></pre>
+<ul>
+<li>Windows：<code>C:\Users\你的用户名\.dsh\skills\weekly-report\SKILL.md</code></li>
+<li>macOS/Linux：<code>~/.dsh/skills/weekly-report/SKILL.md</code></li>
+</ul>
+<p>（<code>weekly-report</code> 是技能名，只能用小写字母、数字和连字符 <code>-</code>。）</p>
+<h3>第二步：写入内容（照抄格式，改内容）</h3>
+<pre><code class="language-markdown">---
+name: weekly-report
+description: 按公司标准模板生成周报。当用户要求写周报、周总结、weekly report 时使用。
+---
+
+# 公司周报规范
+
+## 固定结构
+1. 本周完成（按「做了什么 + 带来什么结果」写，动词开头）
+2. 下周计划（每项注明预计产出）
+3. 风险与求助（需要谁配合、卡在哪里）
+
+## 写作要求
+- 每项一句话，不写套话和空话
+- 数字要具体，有数据就写数据
+- 全文控制在 300 字以内
+- 语气客观，不用感叹号
+
+## 输出格式
+保存成「周报-YYYY-MM-DD.md」，标题用「本周工作周报（MM.DD-MM.DD）」。
+</code></pre>
+<h3>第三步：验证生效</h3>
+<p>重启 <code>dsh</code>（关掉终端重新 <code>npx @deepseek-ai/dsh web</code>），然后随便发一句：</p>
+<pre><code>帮我写这周的周报，我本周完成了 A、B、C 三件事。
+</code></pre>
+<p>你会发现它<strong>自动套用了你定义的模板</strong>，而不是自由发挥。</p>
+<hr />
+<h2 id="lesson-4-4">更多可固化的 SOP 例子</h2>
+<table>
+<thead>
+<tr>
+<th>技能名</th>
+<th>description 里写「当用户要求…时使用」</th>
+<th>正文规则举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>copy-style</code></td>
+<td>写文案/标题/朋友圈</td>
+<td>语气、禁区词、emoji 规范、结尾话题标签</td>
+</tr>
+<tr>
+<td><code>data-clean</code></td>
+<td>清洗数据/处理表格</td>
+<td>日期格式、金额去符号、去重规则、异常值判断</td>
+</tr>
+<tr>
+<td><code>competitor-watch</code></td>
+<td>调研竞品/查竞品</td>
+<td>必查维度、必须附来源链接、输出表格模板</td>
+</tr>
+<tr>
+<td><code>customer-reply</code></td>
+<td>回用户消息/写客服话术</td>
+<td>语气、禁用词、固定开头结尾</td>
+</tr>
+<tr>
+<td><code>meeting-minutes</code></td>
+<td>整理会议纪要</td>
+<td>固定分节、行动项格式、责任人标注</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>规律：<strong>description 决定「什么时候自动用」，正文决定「具体怎么干」。</strong> description 写准了，AI 才能在对的时候想起它。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-4-5">让团队共享一个技能库</h2>
+<p>把技能目录放到一个<strong>共享文件夹</strong>（公司网盘/共享盘），团队成员各自把它指到 DSH，或直接复制到各自的 <code>~/.dsh/skills/</code> 下，就能共用同一套 SOP。</p>
+<blockquote>
+<p>进阶：项目级技能放在项目目录的 <code>.dsh/skills/</code> 下，跟随项目走，更适合「这个项目特有的规矩」。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-4-6">常见问题</h2>
+<p><strong>Q：skill 没生效？</strong>
+- 检查文件路径和文件名：必须是 <code>skills/&lt;技能名&gt;/SKILL.md</code>，<code>SKILL.md</code> 大写。
+- 检查第一行 <code>---</code> 前后、<code>name:</code> 后面是不是小写连字符格式。
+- 重启 dsh 再试。</p>
+<p><strong>Q：AI 没自动用它？</strong>
+- 在提示词里点名：「用 weekly-report 技能帮我写周报」。description 写得更具体，命中率更高。</p>
+<p><strong>Q：改完 skill 不更新？</strong>
+- skill 正文是每次用时重新读取的，改完下次调用就生效；但「目录」可能缓存，重启 dsh 最稳妥。</p>
+<p><strong>Q：这和我每次手动粘贴一段提示词有什么区别？</strong>
+- 手动粘贴：每次都要复制、每次都会漏、换人就忘。skill：写一次，永久生效，团队共享，零重复劳动。</p>
+<hr />
+<p><strong>下一课推荐</strong>：<a href="#lesson-5">05 装社区插件</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
+<section class="lesson" id="lesson-5" data-lesson="5"><h1 id="lesson-5">05 · 场景：装社区插件，白嫖开源生态的能力</h1>
+<blockquote>
+<p>适合：想「一条命令给 DSH 加上新能力」的人——不用自己开发，直接装别人做好的插件。
+门槛：⭐ 会复制命令即可。
+前置：已完成 <a href="#lesson-1">01 快速上手</a>。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-5-1">为什么这是 DSH 的特色</h2>
+<p>Claude Code / Codex 是<strong>闭源产品</strong>——它有什么功能，你就只能用什么功能，加不了「插件」。</p>
+<p>DSH 是 <strong>MIT 开源 + 一切皆插件</strong>——任何能力都能由社区做成插件，你<strong>装一下就用</strong>。这带来一个开源生态的「白嫖红利」：</p>
+<ul>
+<li>别人做好的新工具、新界面、新工作流，你 <code>add</code> 一条命令就装上；</li>
+<li>生态早期，谁贡献谁有先发优势，你作为使用者直接受益。</li>
+</ul>
+<hr />
+<h2 id="lesson-5-2">去哪找插件</h2>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>怎么找</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>dsh-plugin 话题</strong></td>
+<td>在 GitHub 搜索 <code>topic:dsh-plugin</code>，这是官方推荐的聚合方式</td>
+</tr>
+<tr>
+<td><strong>dshfind.com</strong></td>
+<td>社区站点：插件市场 + 排行榜 + 评分</td>
+</tr>
+<tr>
+<td><strong>awesome-deepseek-harness</strong></td>
+<td><a href="https://github.com/libukai/awesome-deepseek-harness">插件/工具清单</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lesson-5-3">怎么装</h2>
+<p>打开终端（可以先关掉正在跑的 dsh），执行：</p>
+<pre><code class="language-sh">dsh plugin --profile web add github:&lt;owner&gt;/&lt;repo&gt;
+</code></pre>
+<p>把 <code>&lt;owner&gt;/&lt;repo&gt;</code> 换成插件仓库的作者/仓库名。装完<strong>重启对应的 profile</strong>（就是重新 <code>dsh web</code> 启动）生效。</p>
+<blockquote>
+<p>如果本地没有 <code>dsh</code> 命令，用 <code>npx @deepseek-ai/dsh</code> 替代前缀：
+<code>npx @deepseek-ai/dsh plugin --profile web add github:&lt;owner&gt;/&lt;repo&gt;</code></p>
+</blockquote>
+<hr />
+<h2 id="lesson-5-4">怎么判断一个插件靠不靠谱（社区评分四把尺子）</h2>
+<p>dshfind 社区用四把尺子给插件打分，你装之前照这个看一眼，能避开一堆坑：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>看什么</th>
+<th>什么叫「好」</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>能装</strong></td>
+<td>是不是真插件</td>
+<td>有真实 <code>@deepseek-ai/dsh-*</code> 依赖，而不是只有 README 的「目录仓」</td>
+</tr>
+<tr>
+<td><strong>有版本</strong></td>
+<td>发布纪律</td>
+<td>有 npm 版本 + git tag/Release，而不是永远 main 裸奔</td>
+</tr>
+<tr>
+<td><strong>有文档</strong></td>
+<td>README 诚意</td>
+<td>有安装步骤 + 截图/演示 + LICENSE</td>
+</tr>
+<tr>
+<td><strong>真集成</strong></td>
+<td>DSH 集成度</td>
+<td>深度用上工具/服务/槽位，而不是「和 DSH 无关、蹭话题」</td>
+</tr>
+</tbody>
+</table>
+<p><strong>给普通人的三句话判断法：</strong>
+1. README 有没有「怎么装 + 装完什么样」？
+2. 有没有真正发布过版本（不是只有 main 分支）？
+3. 它是不是真的为 DSH 做的？</p>
+<hr />
+<h2 id="lesson-5-5">你也能分享插件（一步）</h2>
+<p>你自己做了一个插件，想分享给社区？只需要：</p>
+<blockquote>
+<p>给公开 GitHub 仓库加上话题 <code>dsh-plugin</code>，下次数据刷新就会被插件市场收录。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-5-6">常见问题</h2>
+<p><strong>Q：装完没反应？</strong>
+- 确认重启了 profile（关掉终端重新 <code>dsh web</code>）。
+- 看安装命令是否报错（依赖、网络）。</p>
+<p><strong>Q：装了个插件，界面变乱 / 出问题了？</strong>
+- 卸掉它：在 profile 里移除对应插件即可。装新插件前先看它的 README 和评分。</p>
+<p><strong>Q：插件要求执行构建脚本，安不安全？</strong>
+- 部分 GitHub 安装需要跑第三方构建脚本。<strong>只装你审查过、可信的仓库</strong>，并固定到具体 commit。</p>
+<p><strong>Q：我不会开发，也能贡献插件吗？</strong>
+- 开发插件需要 TypeScript。但「分享一个 skill」（见 <a href="#lesson-4">04 课</a>）门槛低得多，先从那入手。</p>
+<hr />
+<p><strong>下一课推荐</strong>：<a href="#lesson-6">06 模型自由与成本控制</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
+<section class="lesson" id="lesson-6" data-lesson="6"><h1 id="lesson-6">06 · 场景：模型自由与成本控制</h1>
+<blockquote>
+<p>适合：想「换便宜模型省钱、接公司自有网关、对比不同模型效果」的人——管理者、技术负责人、成本敏感团队。
+前置：已完成 <a href="#lesson-1">01 快速上手</a>。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-6-1">为什么这是 DSH 的立身之本</h2>
+<p>Claude Code <strong>只能用 Claude</strong>，Codex <strong>只能用 GPT</strong>——你想省钱、想用自己的模型？没门。</p>
+<p>DSH 是<strong>模型无关</strong>的：官方适配 DeepSeek，还能接<strong>任何 OpenAI 兼容端点</strong>——包括公司自建网关、私有化部署、第三方便宜模型。</p>
+<blockquote>
+<p>社区实测：<strong>dsh 配 DeepSeek，成本约为 Claude 的 1/10～1/30</strong>。同样一套活，模型一换，账单立减一个数量级。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-6-2">三种省钱玩法</h2>
+<table>
+<thead>
+<tr>
+<th>玩法</th>
+<th>怎么做</th>
+<th>省在哪</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用 DeepSeek 默认模型</td>
+<td>设置里填 DeepSeek Key 就行</td>
+<td>官方适配，最省心</td>
+</tr>
+<tr>
+<td>接公司网关/私有模型</td>
+<td>「添加自定义提供方」填网关地址</td>
+<td>数据不出公司，可能还有内部额度</td>
+</tr>
+<tr>
+<td>简单活换便宜档、复杂活换强档</td>
+<td>模型选择器随时切换</td>
+<td>好钢用在刀刃上</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lesson-6-3">操作步骤：换模型 / 加提供方</h2>
+<h3>一、切换到 DeepSeek（默认）</h3>
+<p>打开 <strong>设置 → 模型</strong>，在 DeepSeek 卡片填 API Key，保存。模型路由<strong>下一次请求即生效，无需重启</strong>。</p>
+<h3>二、加其他目录提供方（Anthropic / OpenAI 等）</h3>
+<ol>
+<li><strong>设置 → 模型 → 添加提供方</strong>。</li>
+<li>选 Anthropic 或 OpenAI 等，填对应 API Key，保存。</li>
+<li>已安装目录会自动带出端点、协议和模型列表。</li>
+</ol>
+<h3>三、加自定义提供方（公司网关 / 自建 / 第三方）</h3>
+<ol>
+<li><strong>设置 → 模型 → 添加自定义提供方</strong>。</li>
+<li>填：Provider ID（小写，<strong>永久不可改</strong>，想改名就新建再删旧的）、基础 URL、API 协议、凭据、至少一个模型。</li>
+<li>「获取可用模型」可查询该端点支持哪些模型；选完保存。</li>
+</ol>
+<blockquote>
+<p>常见第三方/自建端点大多是 <strong>OpenAI 兼容</strong>协议（<code>api: openai-completions</code>，<code>baseURL</code> 形如 <code>https://xxx/v1</code>）。</p>
+</blockquote>
+<h3>四、日常切换模型</h3>
+<p>已配置的提供方会出现在<strong>模型选择器</strong>里，点一下就切换；选中的会成为新会话的默认模型。</p>
+<hr />
+<h2 id="lesson-6-4">省钱实战建议</h2>
+<ol>
+<li><strong>批量、长时、定时任务 → 用便宜模型</strong>（DeepSeek 默认档），参考 <a href="#lesson-2">02</a>、<a href="#lesson-3">03</a>。</li>
+<li><strong>关键、复杂、一次性任务 → 临时切强档模型</strong>，做完切回来。</li>
+<li><strong>数据敏感 → 接公司私有网关</strong>，既省钱又不出内网。</li>
+<li><strong>拿不准哪个模型好 → 同一个任务用两个模型各跑一遍对比</strong>（DSH 切换成本极低，这是锁死模型的 Claude/Codex 做不到的）。</li>
+</ol>
+<hr />
+<h2 id="lesson-6-5">常见问题</h2>
+<p><strong>Q：填了 Key 报 <code>MISSING_CREDENTIAL</code>？</strong>
+- 通过「模型页」存 Key，或提供被引用的环境变量。Key 是只写的，保存后界面只显示脱敏描述符。</p>
+<p><strong>Q：报 <code>UNKNOWN_MODEL</code>？</strong>
+- 选一个已配置的模型，或给自定义提供方补上缺失的模型。</p>
+<p><strong>Q：「获取可用模型」返回 401？</strong>
+- 检查 Key。模型发现会调 OpenAI 兼容的 <code>GET /models</code> 端点；不提供该端点的服务就手动输入模型。</p>
+<p><strong>Q：能接图片/多模态模型吗？</strong>
+- 能，但需要给自定义提供方的模型显式声明 <code>input: [text, image]</code>（在 <code>settings.yaml</code> 里配）。纯文本是默认，不声明就按文本处理。</p>
+<p><strong>Q：换模型会影响历史会话吗？</strong>
+- 已发送过请求的会话会保留自己日志里记录的模型；新会话用新默认值。</p>
+<hr />
+<p><strong>下一步</strong>：<a href="#lesson-7">附录 · 常规场景速查</a>，或回到<a href="#lesson-0">总目录</a>。</p></section>
+<section class="lesson" id="lesson-7" data-lesson="7"><h1 id="lesson-7">附录 · 常规场景速查</h1>
+<blockquote>
+<p>这一页是「DSH 的常规用法」速查表。<strong>这些活 Claude Code / Codex 其实也能做</strong>，DSH 的独特优势只有一个：<strong>同样的事，用便宜模型，成本低一个数量级。</strong>
+用法都一样：启动 <code>dsh</code> → 选工作区 → 复制提示词 → 发送。提示词里把「路径」「文件名」「产品名」换成你自己的。</p>
+</blockquote>
+<hr />
+<h2 id="lesson-7-1">速查表</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>一句话提示词模板</th>
+<th>产出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>整理文件</td>
+<td>「把工作区文件按类型分到子文件夹，先列方案等我确认」</td>
+<td>归类好的文件夹</td>
+</tr>
+<tr>
+<td>改文章</td>
+<td>「读取「原文.md」改成公众号风格，另存为「改稿.md」」</td>
+<td>改写稿</td>
+</tr>
+<tr>
+<td>写摘要</td>
+<td>「读取「报告.txt」，3 句话概括 + 挑 5 句金句，存成「摘要.md」」</td>
+<td>摘要文件</td>
+</tr>
+<tr>
+<td>翻译</td>
+<td>「把「产品介绍.md」翻译成英文，保持 Markdown 格式，存成「-en.md」」</td>
+<td>翻译稿</td>
+</tr>
+<tr>
+<td>竞品调研</td>
+<td>「用 web_search 调研产品A/B/C，输出对比表 + 结论，每结论标注来源链接」</td>
+<td>调研报告</td>
+</tr>
+<tr>
+<td>整理反馈</td>
+<td>「读取所有反馈文件，分类去重，挑前 10 高频问题，存成「反馈整理.md」」</td>
+<td>反馈清单</td>
+</tr>
+<tr>
+<td>处理表格</td>
+<td>「读取「数据.csv」，统计总数/平均/按列分组，结论 3 句话」（精确计算让它跑脚本）</td>
+<td>统计结论</td>
+</tr>
+<tr>
+<td>读代码仓库</td>
+<td>「总结这个仓库是干什么的、有哪些模块、入口在哪，写一段给非技术的同事看」</td>
+<td>项目说明</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lesson-7-2">几条通用提示词技巧（所有场景适用）</h2>
+<ol>
+<li><strong>先列方案再动手</strong>：结尾加「先列方案，等我确认再执行」——批量/改动类操作尤其重要。</li>
+<li><strong>要求另存</strong>：加「另存为新文件，不要覆盖原文件」。</li>
+<li><strong>要求标来源</strong>：调研类加「每个结论标注来源链接」，抑制 AI 编造。</li>
+<li><strong>先小后大</strong>：批量加「先处理前 N 个，确认后再全部」。</li>
+<li><strong>精确计算别靠心算</strong>：涉及钱/数字，说「用脚本帮我精确计算」。</li>
+</ol>
+<hr />
+<h2 id="lesson-7-3">两条跨场景红线</h2>
+<ol>
+<li><strong>数据敏感</strong>（工资、客户、公司机密）：API Key 背后是云端模型，敏感数据先脱敏或换公司私有网关（见 <a href="#lesson-6">06 课</a>）。</li>
+<li><strong>动手前必备份</strong>：批量改/删文件前，先复制一份原文件夹。</li>
+</ol>
+<hr />
+<h2 id="lesson-7-4">回到主线</h2>
+<ul>
+<li>想看「DSH 真正的差异化主场」，回到 <a href="#lesson-2">02 大批量批处理</a> 起步。</li>
+<li>或回<a href="#lesson-0">总目录</a>重读「为什么是 DSH」的对比。</li>
+</ul></section>
+</main>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-h1,.toc-h2'));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var lessons = document.querySelectorAll('.lesson');
+  var headings = document.querySelectorAll('.lesson h1[id],.lesson h2[id]');
+  if(!('IntersectionObserver' in window)) return;
+  function clear(){ links.forEach(function(a){ a.classList.remove('active'); }); }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id = e.target.getAttribute('id');
+        clear();
+        if(map[id]) map[id].classList.add('active');
+      }
+    });
+  }, {rootMargin:'-10% 0px -80% 0px', threshold:0});
+  headings.forEach(function(h){ obs.observe(h); });
+})();
+</script>
+
+</body>
+</html>

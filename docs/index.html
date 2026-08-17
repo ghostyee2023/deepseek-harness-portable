@@ -1,11 +1,355 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="0; url=./usage.html" />
-  <title>DeepSeek Harness 便携版</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DeepSeek Harness 便携版 · 使用指南</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --bg-soft: #111730;
+    --card: #151d3a;
+    --line: rgba(148, 163, 255, 0.14);
+    --text: #e6eaf8;
+    --muted: #98a2c8;
+    --accent: #4d6bfe;
+    --accent2: #8b5cf6;
+    --ok: #34d399;
+    --warn: #fbbf24;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(11, 16, 32, 0.82);
+    border-bottom: 1px solid var(--line);
+  }
+  nav { display: flex; align-items: center; gap: 18px; height: 58px; }
+  .brand { font-weight: 700; letter-spacing: .3px; }
+  .brand span { color: var(--accent); }
+  nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+  nav a:hover { color: var(--text); }
+  nav .spacer { flex: 1; }
+
+  .hero { padding: 72px 0 56px; text-align: center; }
+  .hero .kicker {
+    display: inline-block; font-size: 13px; color: var(--accent2);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 14px; margin-bottom: 20px; background: rgba(139,92,246,.08);
+  }
+  .hero h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 800; line-height: 1.25; }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p { color: var(--muted); max-width: 640px; margin: 18px auto 0; font-size: 16px; }
+  .badges { margin-top: 24px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .badge {
+    font-size: 13px; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 12px; background: var(--card);
+  }
+  .cta { margin-top: 32px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 12px 26px; border-radius: 10px;
+    text-decoration: none; font-weight: 600; font-size: 15px;
+  }
+  .btn.primary {
+    color: #fff;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    box-shadow: 0 8px 24px rgba(77, 107, 254, 0.35);
+  }
+  .btn.ghost { color: var(--text); border: 1px solid var(--line); background: var(--card); }
+
+  section { padding: 48px 0; }
+  section + section { border-top: 1px solid var(--line); }
+  h2 { font-size: 26px; font-weight: 750; margin-bottom: 8px; }
+  .sub { color: var(--muted); margin-bottom: 30px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px;
+  }
+  .card .ic { width: 40px; height: 40px; border-radius: 10px; margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(77,107,254,.14); }
+  .card h3 { font-size: 16px; margin-bottom: 6px; }
+  .card p { color: var(--muted); font-size: 14px; }
+
+  .steps { counter-reset: step; display: grid; gap: 14px; }
+  .step {
+    counter-increment: step; display: flex; gap: 18px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 22px;
+  }
+  .step::before {
+    content: counter(step); flex: none; width: 34px; height: 34px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+  }
+  .step h3 { font-size: 16px; }
+  .step p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+  .step code, p code, li code {
+    background: rgba(148,163,255,.12); border: 1px solid var(--line);
+    border-radius: 6px; padding: 1px 7px; font-size: 13px;
+    font-family: "Cascadia Code", Consolas, monospace;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--card);
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; }
+  tr:last-child td { border-bottom: 0; }
+  td code { white-space: nowrap; }
+
+  details {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; margin-bottom: 10px; overflow: hidden;
+  }
+  summary {
+    cursor: pointer; padding: 14px 18px; font-weight: 600; font-size: 15px;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+  }
+  summary::after { content: "+"; color: var(--muted); font-size: 18px; }
+  details[open] summary::after { content: "–"; }
+  details .body { padding: 0 18px 16px; color: var(--muted); font-size: 14px; }
+  details .body code { color: var(--text); }
+
+  .callout {
+    border-left: 3px solid var(--warn); background: rgba(251,191,36,.07);
+    padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 14px;
+    color: var(--text);
+  }
+  .callout.good { border-color: var(--ok); background: rgba(52,211,153,.07); }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--muted);
+    font-size: 13px; text-align: center; }
+  @media (max-width: 640px) {
+    nav a { display: none; }
+    .hero { padding: 48px 0 40px; }
+  }
+</style>
 </head>
 <body>
-  <p>正在跳转到使用指南… <a href="./usage.html">点击进入</a></p>
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="brand">DeepSeek Harness <span>便携版</span></div>
+      <div class="spacer"></div>
+      <a href="#features">特性</a>
+      <a href="#quickstart">快速开始</a>
+      <a href="#optional">可选功能</a>
+      <a href="#codex">Codex 同步</a>
+      <a href="course.html">职场课程</a>
+      <a href="#faq">常见问题</a>
+      <a href="https://github.com/ghostyee2023/deepseek-harness-portable" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="kicker">绿色便携 · 本地数据 · 自动升级</span>
+    <h1>把 <em>DeepSeek Harness</em> 装进一个文件夹</h1>
+    <p>解压即用，无需安装。双击一个 exe 打开独立应用窗口，自动保持最新，聊天记录、配置、凭据全部留在你自己的电脑上。</p>
+    <div class="badges">
+      <span class="badge">Windows ✓</span>
+      <span class="badge">macOS（自行构建）</span>
+      <span class="badge">无注册表依赖</span>
+      <span class="badge">数据可整体备份</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#quickstart">开始使用</a>
+      <a class="btn ghost" href="#faq">常见问题</a>
+      <a class="btn ghost" href="https://github.com/ghostyee2023/deepseek-harness-portable">GitHub 仓库</a>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>它是什么</h2>
+    <p class="sub">DeepSeek Harness 的浏览器界面 + 一个便携启动器，打包成一个文件夹。</p>
+    <div class="grid">
+      <div class="card">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/></svg></div>
+        <h3>绿色便携</h3>
+        <p>整个文件夹拷到 U 盘或任意目录即可运行，不写注册表、不占系统目录。</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></div>
+        <h3>独立应用窗口</h3>
+        <p>用 Edge/Chrome 应用模式打开，无标签页、无地址栏，不占用浏览器。</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 4v5h-5"/></svg></div>
+        <h3>自动升级</h3>
+        <p>每次启动自动对比最新版本，有新版本先升级再启动，无需手动维护。</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <h3>托盘常驻（可选）</h3>
+        <p>setup.cmd 一键启用托盘：后台运行、右键菜单管理，可设开机自启。</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h13l-3 3 3 3H6v10"/><path d="M4 19h16"/></svg></div>
+        <h3>Codex 会话同步</h3>
+        <p>可选插件把本机 Codex 对话导入 Harness，自动探测位置、按目录归组。</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>数据本地化</h3>
+        <p>会话记录、配置、凭据都在 runtime\dsh-home，整个目录即备份。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quickstart">
+  <div class="wrap">
+    <h2>快速开始</h2>
+    <p class="sub">三步就能用起来。</p>
+    <div class="steps">
+      <div class="step">
+        <div>
+          <h3>解压</h3>
+          <p>把整个 <code>dsh-portable-win64</code> 文件夹解压到任意位置（U 盘也可以）。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div>
+          <h3>运行</h3>
+          <p>双击 <code>dsh-web.exe</code>。首次运行需要联网初始化（约几分钟），随后会自动打开独立应用窗口。Windows 若提示 SmartScreen，点“仍要运行”。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div>
+          <h3>配置模型</h3>
+          <p>在界面“设置”里填入你的模型 API Key，选择模型（如 deepseek-v4-pro），开始使用。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="optional">
+  <div class="wrap">
+    <h2>可选功能（setup.cmd）</h2>
+    <p class="sub">双击 <code>setup.cmd</code> 打开安装菜单，按需选择：</p>
+    <table>
+      <thead><tr><th>选项</th><th>作用</th></tr></thead>
+      <tbody>
+        <tr><td><code>1</code></td><td>创建桌面快捷方式，双击即启动</td></tr>
+        <tr><td><code>2</code></td><td>开机自启（托盘常驻，登录后自动后台运行）</td></tr>
+        <tr><td><code>3</code></td><td>取消开机自启</td></tr>
+        <tr><td><code>4</code></td><td>立即启动托盘（任务栏蓝色 D 图标，右键菜单管理）</td></tr>
+        <tr><td><code>5</code></td><td>停止所有 DSH 服务</td></tr>
+        <tr><td><code>6</code></td><td>安装 Codex 同步插件（先运行过一次 dsh-web.exe 再装）</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="codex">
+  <div class="wrap">
+    <h2>Codex 会话同步插件</h2>
+    <p class="sub">把本机 Codex 的对话历史导入 Harness，自动探测 Codex 位置、按目录归类。</p>
+    <div class="callout good">插件会自动查找 Codex（配置项 <code>codexHome</code> → <code>CODEX_HOME</code> → <code>~/.codex</code>），用户不需要知道 Codex 装在哪。</div>
+    <br />
+    <table>
+      <thead><tr><th>命令</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>/codex-sync</code></td><td>查看状态（Codex 目录、Harness 目录）</td></tr>
+        <tr><td><code>/codex-sync detect</code></td><td>重新探测 Codex 位置</td></tr>
+        <tr><td><code>/codex-sync list</code></td><td>列出最近的 Codex 会话</td></tr>
+        <tr><td><code>/codex-sync sync</code></td><td>同步最近 10 个（默认，增量）</td></tr>
+        <tr><td><code>/codex-sync sync all</code></td><td>全量同步</td></tr>
+        <tr><td><code>/codex-sync sync recent:50</code></td><td>同步最近 50 个</td></tr>
+        <tr><td><code>/codex-sync sync &lt;ID 或关键字&gt;</code></td><td>同步指定会话</td></tr>
+      </tbody>
+    </table>
+    <br />
+    <p class="sub">安装插件后重启 Harness；以后每次启动会自动同步最近 10 个新会话（草稿会话自动跳过）。</p>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <h2>数据与备份</h2>
+    <p class="sub">所有数据都在本文件夹内，没有隐藏的系统目录。</p>
+    <table>
+      <thead><tr><th>路径</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td><code>runtime\dsh-home\sessions</code></td><td>全部聊天记录（按工作区分目录）</td></tr>
+        <tr><td><code>runtime\dsh-home\.credentials.yaml</code></td><td>模型 API 凭据</td></tr>
+        <tr><td><code>runtime\dsh-home\settings.yaml</code></td><td>界面与模型设置</td></tr>
+        <tr><td><code>runtime\dsh-home\profiles</code></td><td>插件与 profile 配置</td></tr>
+        <tr><td><code>runtime\dsh-home\storages</code></td><td>工作区与会话索引</td></tr>
+      </tbody>
+    </table>
+    <br />
+    <div class="callout good">备份 = 复制整个文件夹；迁移 = 整个文件夹拷到新位置，首次运行会自动重建内部链接，聊天记录不丢失。</div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>常见问题</h2>
+    <details>
+      <summary>Windows 提示“已保护你的电脑”（SmartScreen）？</summary>
+      <div class="body">exe 未做代码签名。点“更多信息 → 仍要运行”即可。这是绿色版工具的常见现象，不表示文件有问题。</div>
+    </details>
+    <details>
+      <summary>首次运行需要联网吗？</summary>
+      <div class="body">需要。首次启动会初始化 profile 并检查最新版本；之后启动只在有新版时下载更新，断网也能用现有版本。</div>
+    </details>
+    <details>
+      <summary>关掉应用窗口后服务会停吗？</summary>
+      <div class="body">应用窗口模式下，关闭窗口会自动停止服务；托盘模式下，服务由托盘托管，关闭窗口不会停服务，需在托盘菜单里停止。</div>
+    </details>
+    <details>
+      <summary>端口 3080 被占用或访问报 503？</summary>
+      <div class="body">默认端口 3080。如果本机代理（如 127.0.0.1:10808 这类）拦截了 localhost 请求，浏览器可能看到 503，但服务本身正常。可在 <code>launcher.json</code> 里改端口，或用 <code>--port</code> 参数。</div>
+    </details>
+    <details>
+      <summary>历史加载失败 / 左侧出现“未分组”？</summary>
+      <div class="body">旧版本导入的会话可能缺字段，导致校验失败。用 <code>node fix-scripts\repair-sessions.cjs</code> 修复；工作区归位用 <code>fix-scripts\fix-workspaces.cjs</code>（均在源码包的 fix-scripts 目录）。</div>
+    </details>
+    <details>
+      <summary>Mac 上能用吗？</summary>
+      <div class="body">当前 exe 是 Windows 版。Mac 上装好 Node.js，运行 <code>launcher\build.sh</code> 构建 mac 可执行文件，目录结构与配置完全一致；聊天记录文件可跨平台直接拷贝。</div>
+    </details>
+    <details>
+      <summary>如何升级？</summary>
+      <div class="body">启动器每次启动自动检查 <code>@deepseek-ai/dsh</code> 最新版并升级。想手动确认：<code>npm view @deepseek-ai/dsh version</code>。</div>
+    </details>
+    <details>
+      <summary>从哪里重新打包发布？</summary>
+      <div class="body">源码在 <code>launcher\</code>（启动器）与 <code>plugins\dsh-codex-sync\</code>（插件）。改完运行 <code>launcher\build.ps1</code> 重建 exe，再运行 <code>pack.ps1</code> 生成干净的 zip。</div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">DeepSeek Harness 便携版 · 数据始终属于你 ·
+    <a href="https://github.com/ghostyee2023/deepseek-harness-portable" style="color:var(--accent)">GitHub</a> ·
+    <a href="https://github.com/ghostyee2023/deepseek-harness-portable/releases" style="color:var(--accent)">Releases</a> ·
+    <a href="course.html" style="color:var(--accent)">职场课程</a>
+  </div>
+</footer>
 </body>
 </html>

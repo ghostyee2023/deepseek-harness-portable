@@ -39,8 +39,9 @@ Write-Host 'Writing first-run guide...'
 Copy-Item -LiteralPath (Join-Path $root 'launcher\pack-assets\README.txt') -Destination (Join-Path $stage 'README.txt')
 
 Write-Host 'Adding usage webpage...'
-Copy-Item -LiteralPath (Join-Path $root 'docs\usage.html') -Destination (Join-Path $stage 'usage.html')
+Copy-Item -LiteralPath (Join-Path $root 'docs\index.html') -Destination (Join-Path $stage 'usage.html')
 Copy-Item -LiteralPath (Join-Path $root 'docs\usage.md') -Destination (Join-Path $stage 'usage.md')
+Copy-Item -LiteralPath (Join-Path $root 'docs\course.html') -Destination (Join-Path $stage 'course.html')
 
 $zip = Join-Path $out ("deepseek-harness-portable-win64-" + $version + ".zip")
 if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
